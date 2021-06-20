@@ -25,9 +25,12 @@ def hello():
 
 @app.route("/users/<string:user_id>")
 def get_user(event, context, user_id):
-    print("EVENT:" + event)
-    print("CONTEXT:" + context)
-    print("ID:" + user_id)
+    print("EVENT:")
+    print(event)
+    print("CONTEXT:")
+    print(context)
+    print("ID:")
+    print(user_id)
 
 
     resp = client.get_item(
@@ -47,8 +50,10 @@ def get_user(event, context, user_id):
 
 @app.route("/users", methods=["POST"])
 def create_user(event, context):
-    print("EVENT:" + event)
-    print("CONTEXT:" + context)
+    print("EVENT:")
+    print(event)
+    print("CONTEXT:")
+    print(context)
 
     user_id = request.json.get('userId')
     name = request.json.get('name')
