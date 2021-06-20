@@ -25,6 +25,10 @@ def hello():
 
 @app.route("/users/<string:user_id>")
 def get_user(event, context, user_id):
+    print("EVENT:" + event)
+    print("CONTEXT:" + context)
+    print("ID:" + user_id)
+
 
     resp = client.get_item(
         TableName=USERS_TABLE,
@@ -43,7 +47,9 @@ def get_user(event, context, user_id):
 
 @app.route("/users", methods=["POST"])
 def create_user(event, context):
-    print(event, context)
+    print("EVENT:" + event)
+    print("CONTEXT:" + context)
+
     user_id = request.json.get('userId')
     name = request.json.get('name')
     if not user_id or not name:
