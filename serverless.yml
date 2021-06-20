@@ -1,0 +1,77 @@
+# serverless.yml
+org: adamgibbs
+app: ping-messaging
+service: ping-messaging
+
+plugins:
+  - serverless-python-requirements
+  - serverless-dynamodb-local
+  - serverless-wsgi
+
+custom:
+  tableName: 'ping-messaging-table-${self:provider.stage}'
+  wsgi:
+    app: app.app
+    packRequirements: false
+    pythonBin: python3
+  pythonRequirements:
+    pythonBin: python3
+    dockerizePip: non-linux
+  dynamodb:
+    start:
+      migrate: true
+    stages:
+      - test
+      - dev
+
+provider:
+  name: aws
+  runtime: python3.6
+  stage: dev
+  region: eu-west-2
+  iamRoleStatements:
+  - Effect: Allow
+    Action:
+      - dynamodb:Query
+      - dynamodb:Scan
+      - dynamodb:GetItem
+      - dynamodb:PutItem
+      - dynamodb:UpdateItem
+      - dynamodb:DeleteItem
+    Resource:
+      - { "Fn::GetAtt": ["PingDynamoDBTable", "Arn" ] }
+  environment:
+    USERS_TABLE: ${self:custom.tableName}
+
+functions:
+  getUser:
+    handler: app.create_user
+    events:
+      - http: 'GET /users/{proxy+}'
+  createUser:
+    handler: app.get_user
+    events:
+      - http: 'POST /users'
+  app:
+    handler: wsgi_handler.handler
+    events:
+      - http: ANY /
+      - http: 'ANY {proxy+}'
+
+resources:
+  Resources:
+    PingDynamoDBTable:
+      Type: 'AWS::DynamoDB::Table'
+      Properties:
+        AttributeDefinitions:
+          -
+            AttributeName: userId
+            AttributeType: S
+        KeySchema:
+          -
+            AttributeName: userId
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:custom.tableName}

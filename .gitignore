@@ -1,0 +1,6 @@
+node_modules
+.dynamodb
+.serverless
+venv
+.vscode
+__pycache__
