@@ -15,6 +15,7 @@ custom:
     packRequirements: false
     pythonBin: python3
   pythonRequirements:
+    slim: true
     pythonBin: python3
     dockerizePip: non-linux
   dynamodb:
@@ -23,6 +24,13 @@ custom:
     stages:
       - test
       - dev
+
+package:
+  individually: false
+  exclude:
+    - '**/*'
+  include:
+    - handler.py
 
 provider:
   name: aws
@@ -47,7 +55,7 @@ functions:
   getUser:
     handler: app.create_user
     events:
-      - http: 'GET /users/{proxy+}'
+      - http: 'GET /users/{user_id}'
   createUser:
     handler: app.get_user
     events:

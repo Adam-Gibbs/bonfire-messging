@@ -1,9 +1,12 @@
-# app.py
+try:
+    import os
+    import boto3
+    from flask import Flask, jsonify, request
 
-import os
-import boto3
+except ImportError:
+    # Deal with this
+    pass
 
-from flask import Flask, jsonify, request
 app = Flask(__name__)
 
 USERS_TABLE = os.environ['USERS_TABLE']
@@ -50,10 +53,6 @@ def get_user(event, context, user_id):
 
 @app.route("/users", methods=["POST"])
 def create_user(event, context):
-    print("EVENT:")
-    print(event)
-    print("CONTEXT:")
-    print(context)
 
     user_id = request.json.get('userId')
     name = request.json.get('name')
