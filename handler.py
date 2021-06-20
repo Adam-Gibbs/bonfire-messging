@@ -23,25 +23,12 @@ else:
     client = boto3.client('dynamodb')
 
 @app.route("/")
-def hello(event, context):
-    name = event['queryStringParameters']['name']
-    return {
-        "statusCode": 200,
-        "headers": {"Content-Type": "application/json"},
-        "body": json.dumps({"Hello": name})
-    }
+def hello():
+    return "Hello World!"
 
 
 @app.route("/users/<string:user_id>")
-def get_user(event, context, user_id):
-    print("EVENT:")
-    print(event)
-    print("CONTEXT:")
-    print(context)
-    print("ID:")
-    print(user_id)
-
-
+def get_user(user_id):
     resp = client.get_item(
         TableName=USERS_TABLE,
         Key={
@@ -58,8 +45,7 @@ def get_user(event, context, user_id):
     })
 
 @app.route("/users", methods=["POST"])
-def create_user(event, context):
-
+def create_user():
     user_id = request.json.get('userId')
     name = request.json.get('name')
     if not user_id or not name:

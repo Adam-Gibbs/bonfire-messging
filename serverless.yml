@@ -11,7 +11,7 @@ plugins:
 custom:
   tableName: 'ping-messaging-table-${self:provider.stage}'
   wsgi:
-    app: app.app
+    app: handler.app
     packRequirements: false
     pythonBin: python3
   pythonRequirements:
@@ -53,19 +53,20 @@ provider:
 
 functions:
   getUser:
-    handler: app.create_user
+    handler: wsgi_handler.handler
     events:
       - http:
-          path: /users/{proxy+}
+          path: /users/{user_id}
           method: get
+
   createUser:
-    handler: app.get_user
+    handler: wsgi_handler.handler
     events:
       - http:
-          path: /
+          path: /users
           method: post
-  app:
-    handler: app.hello
+  hello:
+    handler: wsgi_handler.handler
     events:
       - http:
           path: /
