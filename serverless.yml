@@ -6,9 +6,14 @@ service: ping-messaging
 plugins:
   - serverless-python-requirements
   - serverless-dynamodb-local
+  - serverless-wsgi
 
 custom:
   tableName: 'ping-messaging-table-${self:provider.stage}'
+  wsgi:
+    app: app.app
+    packRequirements: false
+    pythonBin: python3
   pythonRequirements:
     slim: true
     pythonBin: python3
@@ -50,15 +55,21 @@ functions:
   getUser:
     handler: app.create_user
     events:
-      - http: 'GET /users/{user_id}'
+      - http:
+          path: /users/{proxy+}
+          method: get
   createUser:
     handler: app.get_user
     events:
-      - http: 'POST /users'
+      - http:
+          path: /
+          method: post
   app:
     handler: app.hello
     events:
-      - http: ANY /
+      - http:
+          path: /
+          method: get
 
 resources:
   Resources:

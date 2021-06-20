@@ -1,5 +1,6 @@
 try:
     import os
+    import json
     import boto3
     from flask import Flask, jsonify, request
 
@@ -22,8 +23,13 @@ else:
     client = boto3.client('dynamodb')
 
 @app.route("/")
-def hello():
-    return "Hello You!"
+def hello(event, context):
+    name = event['queryStringParameters']['name']
+    return {
+        "statusCode": 200,
+        "headers": {"Content-Type": "application/json"},
+        "body": json.dumps({"Hello": name})
+    }
 
 
 @app.route("/users/<string:user_id>")
