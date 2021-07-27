@@ -22,7 +22,6 @@ if IS_OFFLINE:
 else:
     client = boto3.client('dynamodb')
 
-@app.route("/users/<string:user_id>")
 def get_user(user_id):
     resp = client.get_item(
         TableName=USERS_TABLE,
@@ -39,7 +38,6 @@ def get_user(user_id):
         'name': item.get('name').get('S')
     })
 
-@app.route("/users", methods=["POST"])
 def create_user():
     user_id = request.json.get('userId')
     name = request.json.get('name')

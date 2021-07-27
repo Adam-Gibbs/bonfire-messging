@@ -43,7 +43,8 @@ package:
     - LICENSE.txt
     - '**/*'
   include:
-    - '*.py'
+    - 'general/*.py'
+    - 'auth/*.py'
 
 # Need to be more specific here with actions and resources
 provider:
@@ -74,20 +75,20 @@ provider:
 
 functions:
   helloGetUser:
-    handler: wsgi_handler.handler
+    handler: general/general.get_user
     events:
       - http:
           path: /users/{user_id}
           method: get
 
   helloCreateUser:
-    handler: wsgi_handler.handler
+    handler: general/general.create_user
     events:
       - http:
           path: /users
           method: post
   hello:
-    handler: hello.handler
+    handler: general/hello.handler
     events:
       - http:
           path: /
