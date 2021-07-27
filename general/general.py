@@ -23,8 +23,6 @@ else:
     client = boto3.client('dynamodb')
 
 def get_user(event, context):
-    print(event.get("pathParameters").get("user_id"))
-    print(event["pathParameters"]["user_id"])
     resp = client.get_item(
         TableName=USERS_TABLE,
         Key={
@@ -33,23 +31,24 @@ def get_user(event, context):
     )
     item = resp.get('Item')
     if not item:
-        return jsonify({'error': 'User does not exist'}), 404
+        print('error')
+        return {
+            'statusCode': 404,
+            'error': 'User does not exist'
+        }
 
-    return {
-        'statusCode': 200,
-        'userId': item.get('userId').get('S'),
+    print('good')
+    return jsonify({
+        'userId': item.get('userId').get('S'), 
         'name': item.get('name').get('S')
-    }
+    }), 200
 
 def create_user(event, context):
-    print(event.get("body"))
-    print(event["body"])
     json_body = json.loads(event.get("body"))
     user_id = json_body.get('userId')
     name = json_body.get('name')
-    print(user_id)
-    print(name)
     if not user_id or not name:
+        print('error')
         return {
             'statusCode': 400,
             'error': 'Please provide userId and name'
@@ -63,8 +62,9 @@ def create_user(event, context):
         }
     )
 
-    return {
+    print('good')
+    return jsonify({
         'statusCode': 200,
         'userId': user_id,
         'name': name
-    }
+    }), 200
