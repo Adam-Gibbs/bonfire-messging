@@ -43,7 +43,7 @@ package:
     - LICENSE.txt
     - '**/*'
   include:
-    - *.py
+    - '*.py'
 
 # Need to be more specific here with actions and resources
 provider:
