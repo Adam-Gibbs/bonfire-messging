@@ -41,6 +41,7 @@ package:
   include:
     - handler.py
 
+# Need to be more specific here with actions and resources
 provider:
   name: aws
   runtime: python3.6
@@ -53,7 +54,6 @@ provider:
       - s3:*
       - iot:*
       - cognito-idp:*
-    # Need to be more specific here and above
     Resource: "*"
       Resource: "arn:aws:s3:::*"
   environment:
