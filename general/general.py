@@ -23,6 +23,8 @@ else:
     client = boto3.client('dynamodb')
 
 def get_user(event, context):
+    print(event.get("pathParameters").get("user_id"))
+    print(event["pathParameters"]["user_id"])
     resp = client.get_item(
         TableName=USERS_TABLE,
         Key={
@@ -40,9 +42,13 @@ def get_user(event, context):
     }
 
 def create_user(event, context):
+    print(event.get("body"))
+    print(event["body"])
     json_body = json.loads(event.get("body"))
     user_id = json_body.get('userId')
     name = json_body.get('name')
+    print(user_id)
+    print(name)
     if not user_id or not name:
         return {
             'statusCode': 400,
