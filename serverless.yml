@@ -441,3 +441,20 @@ resources:
           ReadCapacityUnits: 5
           WriteCapacityUnits: 5
         TableName: ${self:custom.recipientsTable}
+
+  Outputs:
+    UserPoolId:
+      Description: User Pool ID for app to use
+      Value:
+        Ref: CognitoUserPoolMyUserPool
+    UserPoolAppClient:
+      Description: App Client ID for app to use
+      Value:
+        Ref: WebAppUserPoolWebClient
+    IotChannel:
+      Description: Root channel that all app communication goes under
+      Value: ${self:provider.environment.IOT_CHANNEL}
+    IdentityPoolId:
+      Description: Identity Pool ID for app to use
+      Value:
+        Ref: WebAppCognitoIdentityPool
