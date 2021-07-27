@@ -40,12 +40,10 @@ provider:
   iamRoleStatements:
   - Effect: Allow
     Action:
-      - dynamodb:Query
-      - dynamodb:Scan
-      - dynamodb:GetItem
-      - dynamodb:PutItem
-      - dynamodb:UpdateItem
-      - dynamodb:DeleteItem
+      - dynamodb:*
+      - s3:*
+      - iot:*
+      - cognito-idp:*
     Resource:
       - { "Fn::GetAtt": ["PingDynamoDBTable", "Arn" ] }
   environment:
@@ -74,6 +72,99 @@ functions:
 
 resources:
   Resources:
+    # Auth requirements
+    DeleteUserLambdaFunction:
+      Type: "AWS::Lambda::Function"
+      Properties:
+        Environment:
+          Variables:
+            USER_POOL_ID:
+              Ref: CognitoUserPoolMyUserPool
+
+    ApiGatewayMethodGroupDashchatPost:
+      Type: "AWS::ApiGateway::Method"
+      Properties:
+        AuthorizationType: COGNITO_USER_POOLS
+        AuthorizerId:
+          Ref: ApiGatewayAuthorizer
+    ApiGatewayMethodUserDelete:
+      Type: "AWS::ApiGateway::Method"
+      Properties:
+        AuthorizationType: COGNITO_USER_POOLS
+        AuthorizerId:
+          Ref: ApiGatewayAuthorizer
+    ApiGatewayMethodUserChatsUseridVarDelete:
+      Type: "AWS::ApiGateway::Method"
+      Properties:
+        AuthorizationType: COGNITO_USER_POOLS
+        AuthorizerId:
+          Ref: ApiGatewayAuthorizer
+    ApiGatewayMethodUserLastDashactivityPut:
+      Type: "AWS::ApiGateway::Method"
+      Properties:
+        AuthorizationType: COGNITO_USER_POOLS
+        AuthorizerId:
+          Ref: ApiGatewayAuthorizer
+    ApiGatewayMethodUserGet:
+      Type: "AWS::ApiGateway::Method"
+      Properties:
+        AuthorizationType: COGNITO_USER_POOLS
+        AuthorizerId:
+          Ref: ApiGatewayAuthorizer
+    ApiGatewayMethodUserInvitesGet:
+      Type: "AWS::ApiGateway::Method"
+      Properties:
+        AuthorizationType: COGNITO_USER_POOLS
+        AuthorizerId:
+          Ref: ApiGatewayAuthorizer
+    ApiGatewayMethodUsersOnlineGet:
+      Type: "AWS::ApiGateway::Method"
+      Properties:
+        AuthorizationType: COGNITO_USER_POOLS
+        AuthorizerId:
+          Ref: ApiGatewayAuthorizer
+    ApiGatewayMethodInvitesSendPost:
+      Type: "AWS::ApiGateway::Method"
+      Properties:
+        AuthorizationType: COGNITO_USER_POOLS
+        AuthorizerId:
+          Ref: ApiGatewayAuthorizer
+    ApiGatewayMethodInvitesAcceptPost:
+      Type: "AWS::ApiGateway::Method"
+      Properties:
+        AuthorizationType: COGNITO_USER_POOLS
+        AuthorizerId:
+          Ref: ApiGatewayAuthorizer
+    ApiGatewayMethodUserChatsGet:
+      Type: "AWS::ApiGateway::Method"
+      Properties:
+        AuthorizationType: COGNITO_USER_POOLS
+        AuthorizerId:
+          Ref: ApiGatewayAuthorizer
+    ApiGatewayMethodUserChatsUseridVarMessagesPost:
+      Type: "AWS::ApiGateway::Method"
+      Properties:
+        AuthorizationType: COGNITO_USER_POOLS
+        AuthorizerId:
+          Ref: ApiGatewayAuthorizer
+    ApiGatewayMethodUserChatsUseridVarMessagesGet:
+      Type: "AWS::ApiGateway::Method"
+      Properties:
+        AuthorizationType: COGNITO_USER_POOLS
+        AuthorizerId:
+          Ref: ApiGatewayAuthorizer
+    ApiGatewayAuthorizer:
+      Type: "AWS::ApiGateway::Authorizer"
+      Properties:
+        Name: UserPool
+        ProviderARNs:
+          - 'Fn::GetAtt': [ CognitoUserPoolMyUserPool, Arn ]
+        RestApiId:
+          Ref: ApiGatewayRestApi
+        IdentitySource: "method.request.header.Authorization"
+        Type: COGNITO_USER_POOLS
+    
+    # DB stuff
     PingDynamoDBTable:
       Type: 'AWS::DynamoDB::Table'
       Properties:
