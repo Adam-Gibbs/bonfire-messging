@@ -74,14 +74,14 @@ provider:
     RECIPIENTS_TABLE: ${self:custom.recipientsTable}
 
 functions:
-  getUser:
+  helloGetUser:
     handler: wsgi_handler.handler
     events:
       - http:
           path: /users/{user_id}
           method: get
 
-  createUser:
+  helloCreateUser:
     handler: wsgi_handler.handler
     events:
       - http:
