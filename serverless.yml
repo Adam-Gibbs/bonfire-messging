@@ -54,8 +54,9 @@ provider:
       - s3:*
       - iot:*
       - cognito-idp:*
-    Resource: "*"
-      Resource: "arn:aws:s3:::*"
+    Resource: 
+      - "*"
+      - "arn:aws:s3:::*"
   environment:
     IOT_CHANNEL: /${self:custom.functionPrefix}
     USERS_TABLE: ${self:custom.usersTable}
