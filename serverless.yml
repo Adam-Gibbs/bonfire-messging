@@ -374,10 +374,15 @@ resources:
       Type: "AWS::DynamoDB::Table"
       Properties:
         AttributeDefinitions:
+          - AttributeName: chatMemberId
+            AttributeType: S
           - AttributeName: chatId
             AttributeType: S
           - AttributeName: userId
             AttributeType: S
+        KeySchema:
+          - AttributeName: chatMemberId
+            KeyType: HASH
         ProvisionedThroughput:
           ReadCapacityUnits: 5
           WriteCapacityUnits: 5
@@ -401,12 +406,17 @@ resources:
       Type: "AWS::DynamoDB::Table"
       Properties:
         AttributeDefinitions:
+          - AttributeName: friendLinkId
+            AttributeType: S
           - AttributeName: userId
             AttributeType: S
           - AttributeName: friendId
             AttributeType: S
           - AttributeName: accepted
             AttributeType: B
+        KeySchema:
+          - AttributeName: friendLinkId
+            KeyType: HASH
         ProvisionedThroughput:
           ReadCapacityUnits: 5
           WriteCapacityUnits: 5
@@ -433,11 +443,16 @@ resources:
     RecipientsTable:
       Type: "AWS::DynamoDB::Table"
       Properties:
-        AttributeDefinitions:
+        AttributeDefinitions:        
+          - AttributeName: recipientId
+            AttributeType: S
           - AttributeName: pingId
             AttributeType: S
           - AttributeName: userId
             AttributeType: S
+        KeySchema:
+          - AttributeName: recipientId
+            KeyType: HASH
         ProvisionedThroughput:
           ReadCapacityUnits: 5
           WriteCapacityUnits: 5
