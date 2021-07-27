@@ -399,7 +399,14 @@ resources:
           unauthenticated:
             'Fn::GetAtt': [ cognitoUnauthRole, Arn ]
           authenticated:
-            'Fn::GetAtt': [ cognitoAuthRole, Arn]
+            'Fn::GetAtt': [ cognitoAuthRole, Arn]    
+    DeleteUserLambdaFunction:
+      Type: "AWS::Lambda::Function"
+      Properties:
+        Environment:
+          Variables:
+            USER_POOL_ID:
+              Ref: CognitoUserPoolMyUserPool
 
     # API Auth requirements
     ApiGatewayMethodGroupDashchatPost:
