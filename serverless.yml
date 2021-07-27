@@ -72,7 +72,121 @@ functions:
 
 resources:
   Resources:
-    # Auth requirements
+    # Auth Requirements        
+    CognitoUserPoolMyUserPool:
+      Type: "AWS::Cognito::UserPool"
+      Properties:
+        AdminCreateUserConfig:
+          AllowAdminCreateUserOnly: False
+        AliasAttributes:
+          - email
+        AutoVerifiedAttributes:
+          - email
+        Policies:
+          PasswordPolicy:
+            MinimumLength: 8
+            RequireLowercase: false
+            RequireNumbers: false
+            RequireSymbols: false
+            RequireUppercase: false
+        UserPoolName: ${self:custom.functionPrefix}
+        Schema:
+          - Name: email
+            AttributeDataType: String
+            DeveloperOnlyAttribute: false
+            Mutable: true
+            Required: true
+    WebAppUserPoolWebClient:
+      Type: "AWS::Cognito::UserPoolClient"
+      Properties:
+        ClientName: Web
+        GenerateSecret: false
+        ReadAttributes:
+          - "email"
+        UserPoolId:
+          Ref: CognitoUserPoolMyUserPool
+        WriteAttributes:
+          - "email"
+    WebAppCognitoIdentityPool:
+      Type: "AWS::Cognito::IdentityPool"
+      Properties:
+        IdentityPoolName: ${self:custom.identityPool}
+        AllowUnauthenticatedIdentities: true
+        CognitoIdentityProviders:
+          - ProviderName:
+              'Fn::GetAtt': [ CognitoUserPoolMyUserPool, ProviderName ]
+            ClientId:
+              Ref: WebAppUserPoolWebClient
+    cognitoAuthRole:
+      Type: 'AWS::IAM::Role'
+      Properties:
+        RoleName: ${self:custom.identityPool}_Auth_Role
+        AssumeRolePolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Principal:
+                Federated: cognito-identity.amazonaws.com
+              Action: [ 'sts:AssumeRoleWithWebIdentity' ]
+              Condition:
+                StringEquals:
+                  'cognito-identity.amazonaws.com:aud':
+                    Ref: WebAppCognitoIdentityPool
+                'ForAnyValue:StringLike':
+                    'cognito-identity.amazonaws.com:amr': authenticated
+        Policies:
+          - PolicyName: cognitoauth
+            PolicyDocument:
+              Version: '2012-10-17'
+              Statement:
+                - Effect: Allow
+                  Action:
+                  - 'iot:Connect'
+                  - 'iot:Subscribe'
+                  Resource:
+                  - "*"
+    cognitoUnauthRole:
+      Type: 'AWS::IAM::Role'
+      Properties:
+        RoleName: ${self:custom.identityPool}_Unauth_Role
+        AssumeRolePolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Principal:
+                Federated: cognito-identity.amazonaws.com
+              Action: [ 'sts:AssumeRoleWithWebIdentity' ]
+              Condition:
+                StringEquals:
+                  'cognito-identity.amazonaws.com:aud':
+                    Ref: WebAppCognitoIdentityPool
+                'ForAnyValue:StringLike':
+                    'cognito-identity.amazonaws.com:amr': unauthenticated
+        Policies:
+          - PolicyName: cognitounauth
+            PolicyDocument:
+              Version: '2012-10-17'
+              Statement:
+                - Effect: Allow
+                  Action:
+                  - 'iot:Connect'
+                  - 'iot:Subscribe'
+                  - 'iot:*'
+                  - 'mobileanalytics:PutEvents'
+                  - 'cognito-sync:*'
+                  Resource:
+                  - "*"
+    myApiIdentityPoolRoleAttachment:
+      DependsOn: [ WebAppCognitoIdentityPool, cognitoUnauthRole, cognitoAuthRole ]
+      Type: "AWS::Cognito::IdentityPoolRoleAttachment"
+      Properties:
+        IdentityPoolId:
+          Ref: WebAppCognitoIdentityPool
+        Roles:
+          unauthenticated:
+            'Fn::GetAtt': [ cognitoUnauthRole, Arn ]
+          authenticated:
+            'Fn::GetAtt': [ cognitoAuthRole, Arn]
     DeleteUserLambdaFunction:
       Type: "AWS::Lambda::Function"
       Properties:
@@ -81,6 +195,7 @@ resources:
             USER_POOL_ID:
               Ref: CognitoUserPoolMyUserPool
 
+    # API Auth requirements
     ApiGatewayMethodGroupDashchatPost:
       Type: "AWS::ApiGateway::Method"
       Properties:
