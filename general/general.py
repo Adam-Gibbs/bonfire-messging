@@ -2,13 +2,10 @@ try:
     import os
     import json
     import boto3
-    from flask import Flask, jsonify, request
 
 except ImportError:
     # Deal with this
     pass
-
-app = Flask(__name__)
 
 USERS_TABLE = os.environ['USERS_TABLE']
 IS_OFFLINE = os.environ.get('IS_OFFLINE')
@@ -38,10 +35,13 @@ def get_user(event, context):
         }
 
     print('good')
-    return jsonify({
-        'userId': item.get('userId').get('S'), 
-        'name': item.get('name').get('S')
-    }), 200
+    return {
+        'statusCode': 200,
+        'body': {
+            'userId': item.get('userId').get('S'), 
+            'name': item.get('name').get('S')
+        }
+    }
 
 def create_user(event, context):
     json_body = json.loads(event.get("body"))
@@ -63,8 +63,7 @@ def create_user(event, context):
     )
 
     print('good')
-    return jsonify({
+    return {
         'statusCode': 200,
-        'userId': user_id,
-        'name': name
-    }), 200
+        'body': user_id,
+    }
