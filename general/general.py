@@ -22,23 +22,25 @@ if IS_OFFLINE:
 else:
     client = boto3.client('dynamodb')
 
-def get_user(user_id):
-    resp = client.get_item(
-        TableName=USERS_TABLE,
-        Key={
-            'userId': { 'S': user_id }
-        }
-    )
-    item = resp.get('Item')
-    if not item:
-        return jsonify({'error': 'User does not exist'}), 404
+def get_user(event, context):
+    print(event)
+    print(context)
+    # resp = client.get_item(
+    #     TableName=USERS_TABLE,
+    #     Key={
+    #         'userId': { 'S': user_id }
+    #     }
+    # )
+    # item = resp.get('Item')
+    # if not item:
+    #     return jsonify({'error': 'User does not exist'}), 404
 
-    return jsonify({
-        'userId': item.get('userId').get('S'),
-        'name': item.get('name').get('S')
-    })
+    # return jsonify({
+    #     'userId': item.get('userId').get('S'),
+    #     'name': item.get('name').get('S')
+    # })
 
-def create_user():
+def create_user(event, context):
     user_id = request.json.get('userId')
     name = request.json.get('name')
     if not user_id or not name:
