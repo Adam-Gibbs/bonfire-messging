@@ -28,13 +28,11 @@ def get_user(event, context):
     )
     item = resp.get('Item')
     if not item:
-        print('error')
         return {
             'statusCode': 404,
             'error': 'User does not exist'
         }
 
-    print('good')
     return {
         'statusCode': 200,
         'body': json.dumps({
@@ -48,7 +46,6 @@ def create_user(event, context):
     user_id = json_body.get('userId')
     name = json_body.get('name')
     if not user_id or not name:
-        print('error')
         return {
             'statusCode': 400,
             'error': 'Please provide userId and name'
@@ -62,7 +59,6 @@ def create_user(event, context):
         }
     )
 
-    print('good')
     return {
         'statusCode': 200,
         'body': json.dumps({

@@ -6,7 +6,6 @@ service: ping-messaging
 plugins:
   - serverless-python-requirements
   - serverless-dynamodb-local
-  - serverless-wsgi
 
 custom:
   functionPrefix: 'ping-messaging-${self:provider.stage}'
@@ -19,10 +18,6 @@ custom:
   pingsTable: '${self:custom.functionPrefix}.pings'
   recipientsTable: '${self:custom.functionPrefix}.recipients'
   identityPool: 'pingMessaging${self:provider.stage}'
-  wsgi:
-    app: handler.app
-    packRequirements: false
-    pythonBin: python3
   pythonRequirements:
     slim: true
     pythonBin: python3
