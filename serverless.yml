@@ -91,6 +91,14 @@ functions:
 
 resources:
   Resources:
+    DeleteUserLambdaFunction:
+      Type: "AWS::Lambda::Function"
+      Properties:
+        Environment:
+          Variables:
+            USER_POOL_ID:
+              Ref: CognitoUserPoolMyUserPool
+
     # Auth Requirements        
     CognitoUserPoolMyUserPool:
       Type: "AWS::Cognito::UserPool"
@@ -206,13 +214,6 @@ resources:
             'Fn::GetAtt': [ cognitoUnauthRole, Arn ]
           authenticated:
             'Fn::GetAtt': [ cognitoAuthRole, Arn]
-    DeleteUserLambdaFunction:
-      Type: "AWS::Lambda::Function"
-      Properties:
-        Environment:
-          Variables:
-            USER_POOL_ID:
-              Ref: CognitoUserPoolMyUserPool
 
     # API Auth requirements
     ApiGatewayMethodGroupDashchatPost:
