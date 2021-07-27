@@ -43,8 +43,7 @@ package:
     - LICENSE.txt
     - '**/*'
   include:
-    - hello.py
-    - handler.py
+    - *.py
 
 # Need to be more specific here with actions and resources
 provider:
