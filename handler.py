@@ -22,11 +22,6 @@ if IS_OFFLINE:
 else:
     client = boto3.client('dynamodb')
 
-@app.route("/")
-def hello():
-    return "Hello World!"
-
-
 @app.route("/users/<string:user_id>")
 def get_user(user_id):
     resp = client.get_item(

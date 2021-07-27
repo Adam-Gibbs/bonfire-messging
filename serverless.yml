@@ -37,8 +37,13 @@ custom:
 package:
   individually: false
   exclude:
+    - requirements.txt
+    - serverless.yml
+    - README.md
+    - LICENSE.txt
     - '**/*'
   include:
+    - hello.py
     - handler.py
 
 # Need to be more specific here with actions and resources
@@ -69,6 +74,26 @@ provider:
     RECIPIENTS_TABLE: ${self:custom.recipientsTable}
 
 functions:
+  getUser:
+    handler: wsgi_handler.handler
+    events:
+      - http:
+          path: /users/{user_id}
+          method: get
+
+  createUser:
+    handler: wsgi_handler.handler
+    events:
+      - http:
+          path: /users
+          method: post
+  hello:
+    handler: hello.handler
+    events:
+      - http:
+          path: /
+          method: get
+
   sendGroupMessage:
     name: ${self:custom.functionPrefix}-sendGroupMessage
     handler: src/functions/sendGroupMessage.handler
