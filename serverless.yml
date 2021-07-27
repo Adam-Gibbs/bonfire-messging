@@ -307,8 +307,6 @@ resources:
             AttributeType: S
           - AttributeName: username
             AttributeType: S
-          - AttributeName: mediaId
-            AttributeType: S
         GlobalSecondaryIndexes:
           - IndexName: username-index
             KeySchema:
@@ -332,8 +330,6 @@ resources:
         AttributeDefinitions:
           - AttributeName: chatId
             AttributeType: S
-          - AttributeName: pingId
-            AttributeType: S
         KeySchema:
           - AttributeName: chatId
             KeyType: HASH
@@ -347,22 +343,6 @@ resources:
         AttributeDefinitions:
           - AttributeName: messageId
             AttributeType: S
-          - AttributeName: chatId
-            AttributeType: S
-          - AttributeName: userId
-            AttributeType: S
-          - AttributeName: message
-            AttributeType: S
-          - AttributeName: mediaId
-            AttributeType: S
-          - AttributeName: replyId
-            AttributeType: S
-          - AttributeName: date
-            AttributeType: N
-          - AttributeName: received
-            AttributeType: B
-          - AttributeName: read
-            AttributeType: B
         KeySchema:
           - AttributeName: messageId
             KeyType: HASH
@@ -375,10 +355,6 @@ resources:
       Properties:
         AttributeDefinitions:
           - AttributeName: chatMemberId
-            AttributeType: S
-          - AttributeName: chatId
-            AttributeType: S
-          - AttributeName: userId
             AttributeType: S
         KeySchema:
           - AttributeName: chatMemberId
@@ -393,8 +369,6 @@ resources:
         AttributeDefinitions:
           - AttributeName: mediaId
             AttributeType: S
-          - AttributeName: link
-            AttributeType: S
         KeySchema:
           - AttributeName: mediaId
             KeyType: HASH
@@ -408,12 +382,6 @@ resources:
         AttributeDefinitions:
           - AttributeName: friendLinkId
             AttributeType: S
-          - AttributeName: userId
-            AttributeType: S
-          - AttributeName: friendId
-            AttributeType: S
-          - AttributeName: accepted
-            AttributeType: B
         KeySchema:
           - AttributeName: friendLinkId
             KeyType: HASH
@@ -427,12 +395,6 @@ resources:
         AttributeDefinitions:
           - AttributeName: pingId
             AttributeType: S
-          - AttributeName: userId
-            AttributeType: S          
-          - AttributeName: message
-            AttributeType: S
-          - AttributeName: date
-            AttributeType: N
         KeySchema:
           - AttributeName: pingId
             KeyType: HASH
@@ -445,10 +407,6 @@ resources:
       Properties:
         AttributeDefinitions:        
           - AttributeName: recipientId
-            AttributeType: S
-          - AttributeName: pingId
-            AttributeType: S
-          - AttributeName: userId
             AttributeType: S
         KeySchema:
           - AttributeName: recipientId
