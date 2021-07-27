@@ -37,10 +37,10 @@ def get_user(event, context):
     print('good')
     return {
         'statusCode': 200,
-        'body': {
+        'body': json.dumps({
             'userId': item.get('userId').get('S'), 
             'name': item.get('name').get('S')
-        }
+        })
     }
 
 def create_user(event, context):
@@ -65,5 +65,8 @@ def create_user(event, context):
     print('good')
     return {
         'statusCode': 200,
-        'body': user_id,
+        'body': json.dumps({
+            'userId': user_id, 
+            'name': name
+        })
     }
