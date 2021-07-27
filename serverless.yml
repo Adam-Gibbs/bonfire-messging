@@ -9,7 +9,16 @@ plugins:
   - serverless-wsgi
 
 custom:
-  tableName: 'ping-messaging-table-${self:provider.stage}'
+  functionPrefix: 'ping-messaging-${self:provider.stage}'
+  usersTable: '${self:custom.functionPrefix}.users'
+  chatsTable: '${self:custom.functionPrefix}.chats'
+  messagesTable: '${self:custom.functionPrefix}.messages'
+  chatMembersTable: '${self:custom.functionPrefix}.chatMembers'
+  mediaTable: '${self:custom.functionPrefix}.media'
+  friendsTable: '${self:custom.functionPrefix}.friends'
+  pingsTable: '${self:custom.functionPrefix}.pings'
+  recipientsTable: '${self:custom.functionPrefix}.recipients'
+  identityPool: 'pingMessaging${self:provider.stage}'
   wsgi:
     app: handler.app
     packRequirements: false
@@ -44,10 +53,19 @@ provider:
       - s3:*
       - iot:*
       - cognito-idp:*
-    Resource:
-      - { "Fn::GetAtt": ["PingDynamoDBTable", "Arn" ] }
+    # Need to be more specific here and above
+    Resource: "*"
+      Resource: "arn:aws:s3:::*"
   environment:
-    USERS_TABLE: ${self:custom.tableName}
+    IOT_CHANNEL: /${self:custom.functionPrefix}
+    USERS_TABLE: ${self:custom.usersTable}
+    CHATS_TABLE: ${self:custom.chatsTable}
+    MESSAGES_TABLE: ${self:custom.messagesTable}
+    CHAT_MEMBERS_TABLE: ${self:custom.chatMembersTable}
+    MEDIA_TABLE: ${self:custom.mediaTable}
+    FRIENDS_TABLE: ${self:custom.friendsTable}
+    PINGS_TABLE: ${self:custom.pingsTable}
+    RECIPIENTS_TABLE: ${self:custom.recipientsTable}
 
 functions:
   getUser:
@@ -280,18 +298,146 @@ resources:
         Type: COGNITO_USER_POOLS
     
     # DB stuff
-    PingDynamoDBTable:
+    UsersTable:
       Type: 'AWS::DynamoDB::Table'
       Properties:
         AttributeDefinitions:
-          -
-            AttributeName: userId
+          - AttributeName: userId
             AttributeType: S
+          - AttributeName: username
+            AttributeType: S
+          - AttributeName: mediaId
+            AttributeType: S
+        GlobalSecondaryIndexes:
+          - IndexName: username-index
+            KeySchema:
+              - AttributeName: username
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+            ProvisionedThroughput:
+              ReadCapacityUnits: 5
+              WriteCapacityUnits: 5
         KeySchema:
-          -
-            AttributeName: userId
+          - AttributeName: userId
             KeyType: HASH
         ProvisionedThroughput:
-          ReadCapacityUnits: 1
-          WriteCapacityUnits: 1
-        TableName: ${self:custom.tableName}
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
+        TableName: ${self:custom.usersTable}
+    ChatsTable:
+      Type: "AWS::DynamoDB::Table"
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: chatId
+            AttributeType: S
+          - AttributeName: pingId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: chatId
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
+        TableName: ${self:custom.chatsTable}
+    MessagesTable:
+      Type: "AWS::DynamoDB::Table"
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: messageId
+            AttributeType: S
+          - AttributeName: chatId
+            AttributeType: S
+          - AttributeName: userId
+            AttributeType: S
+          - AttributeName: message
+            AttributeType: S
+          - AttributeName: mediaId
+            AttributeType: S
+          - AttributeName: replyId
+            AttributeType: S
+          - AttributeName: date
+            AttributeType: N
+          - AttributeName: received
+            AttributeType: B
+          - AttributeName: read
+            AttributeType: B
+        KeySchema:
+          - AttributeName: messageId
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
+        TableName: ${self:custom.messagesTable}
+    ChatMembersTable:
+      Type: "AWS::DynamoDB::Table"
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: chatId
+            AttributeType: S
+          - AttributeName: userId
+            AttributeType: S
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
+        TableName: ${self:custom.chatMembersTable}
+    MediaTable:
+      Type: "AWS::DynamoDB::Table"
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: mediaId
+            AttributeType: S
+          - AttributeName: link
+            AttributeType: S
+        KeySchema:
+          - AttributeName: mediaId
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
+        TableName: ${self:custom.mediaTable}
+    FriendsTable:
+      Type: "AWS::DynamoDB::Table"
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: userId
+            AttributeType: S
+          - AttributeName: friendId
+            AttributeType: S
+          - AttributeName: accepted
+            AttributeType: B
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
+        TableName: ${self:custom.friendsTable}
+    PingsTable:
+      Type: "AWS::DynamoDB::Table"
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: pingId
+            AttributeType: S
+          - AttributeName: userId
+            AttributeType: S          
+          - AttributeName: message
+            AttributeType: S
+          - AttributeName: date
+            AttributeType: N
+        KeySchema:
+          - AttributeName: pingId
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
+        TableName: ${self:custom.pingsTable}
+    RecipientsTable:
+      Type: "AWS::DynamoDB::Table"
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: pingId
+            AttributeType: S
+          - AttributeName: userId
+            AttributeType: S
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
+        TableName: ${self:custom.recipientsTable}
