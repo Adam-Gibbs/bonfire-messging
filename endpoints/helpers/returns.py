@@ -11,9 +11,8 @@ class DecimalEncoder(json.JSONEncoder):
 		return super(DecimalEncoder, self).default(o)
 
 def generate_response(status, body, headers={}):
-	print(f"Status Code: {status}, Body: {body}")
 	return {
 		"statusCode": status,
-		"body": json.dumps(body, indent=4, cls=DecimalEncoder),
+		"body": json.dumps(body),
 		"headers": headers
 	}

@@ -20,19 +20,41 @@ def lambda_handler(event, context):
             ForceAliasCreation=False,
         )
 
-        print(response)
-
     except client.exceptions.UserNotFoundException:
-        generate_response(400, {"success": False, "message": "Username doesn't exists"})
-        # return event
+        return generate_response(400,
+            {
+                "success": False,
+                "message": "Username doesn't exists"
+            }
+        )
         
     except client.exceptions.CodeMismatchException:
-        generate_response(400, {"success": False, "message": "Invalid Verification code"})
+        return generate_response(400,
+            {
+                "success": False,
+                "message": "Invalid Verification code"
+            }
+        )
         
     except client.exceptions.NotAuthorizedException:
-        generate_response(400, {"success": False, "message": "User is already confirmed"})
+        return generate_response(400,
+            {
+                "success": False,
+                "message": "User is already confirmed"
+            }
+        )
     
     except Exception as e:
-        generate_response(400, {"success": False, "message": f"Unknown error {e.__str__()} "})
+        return generate_response(400,
+            {
+                "success": False,
+                "message": f"Unknown error {e.__str__()} "
+            }
+        )
       
-    generate_response(200, event)
+    return generate_response(200, 
+        {
+            "success": True,
+            "message": "Your account is now verified"
+        }
+    )
