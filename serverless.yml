@@ -4,656 +4,656 @@ app: ping-messaging
 service: ping-messaging
 
 plugins:
-	- serverless-python-requirements
-	- serverless-dynamodb-local
+  - serverless-python-requirements
+  - serverless-dynamodb-local
 
 custom:
-	functionPrefix: 'ping-messaging-${self:provider.stage}'
-	usersTable: '${self:custom.functionPrefix}.users'
-	chatsTable: '${self:custom.functionPrefix}.chats'
-	messagesTable: '${self:custom.functionPrefix}.messages'
-	chatMembersTable: '${self:custom.functionPrefix}.chatMembers'
-	mediaTable: '${self:custom.functionPrefix}.media'
-	friendsTable: '${self:custom.functionPrefix}.friends'
-	pingsTable: '${self:custom.functionPrefix}.pings'
-	recipientsTable: '${self:custom.functionPrefix}.recipients'
-	identityPool: 'pingMessaging${self:provider.stage}'
-	pythonRequirements:
-		slim: true
-		pythonBin: python3
-		dockerizePip: non-linux
-	dynamodb:
-		start:
-			migrate: true
-		stages:
-			- test
-			- dev
+  functionPrefix: 'ping-messaging-${self:provider.stage}'
+  usersTable: '${self:custom.functionPrefix}.users'
+  chatsTable: '${self:custom.functionPrefix}.chats'
+  messagesTable: '${self:custom.functionPrefix}.messages'
+  chatMembersTable: '${self:custom.functionPrefix}.chatMembers'
+  mediaTable: '${self:custom.functionPrefix}.media'
+  friendsTable: '${self:custom.functionPrefix}.friends'
+  pingsTable: '${self:custom.functionPrefix}.pings'
+  recipientsTable: '${self:custom.functionPrefix}.recipients'
+  identityPool: 'pingMessaging${self:provider.stage}'
+  pythonRequirements:
+    slim: true
+    pythonBin: python3
+    dockerizePip: non-linux
+  dynamodb:
+    start:
+      migrate: true
+    stages:
+      - test
+      - dev
 
 package:
-	individually: false
-	exclude:
-		- requirements.txt
-		- serverless.yml
-		- README.md
-		- LICENSE.txt
-		- '**/*'
-	include:
-		- 'general/*.py'
-		- 'auth/*.py'
+  individually: false
+  exclude:
+    - requirements.txt
+    - serverless.yml
+    - README.md
+    - LICENSE.txt
+    - '**/*'
+  include:
+    - 'general/*.py'
+    - 'auth/*.py'
 
 # Need to be more specific here with actions and resources
 provider:
-	name: aws
-	runtime: python3.6
-	stage: dev
-	region: eu-west-2
-	iamRoleStatements:
-	- Effect: Allow
-		Action:
-			- dynamodb:*
-			- s3:*
-			- iot:*
-			- cognito-idp:*
-		Resource: 
-			- "*"
-			- "arn:aws:s3:::*"
-	environment:
-		IOT_CHANNEL: /${self:custom.functionPrefix}
-		USERS_TABLE: ${self:custom.usersTable}
-		CHATS_TABLE: ${self:custom.chatsTable}
-		MESSAGES_TABLE: ${self:custom.messagesTable}
-		CHAT_MEMBERS_TABLE: ${self:custom.chatMembersTable}
-		MEDIA_TABLE: ${self:custom.mediaTable}
-		FRIENDS_TABLE: ${self:custom.friendsTable}
-		PINGS_TABLE: ${self:custom.pingsTable}
-		RECIPIENTS_TABLE: ${self:custom.recipientsTable}
+  name: aws
+  runtime: python3.6
+  stage: dev
+  region: eu-west-2
+  iamRoleStatements:
+  - Effect: Allow
+    Action:
+      - dynamodb:*
+      - s3:*
+      - iot:*
+      - cognito-idp:*
+    Resource: 
+      - "*"
+      - "arn:aws:s3:::*"
+  environment:
+    IOT_CHANNEL: /${self:custom.functionPrefix}
+    USERS_TABLE: ${self:custom.usersTable}
+    CHATS_TABLE: ${self:custom.chatsTable}
+    MESSAGES_TABLE: ${self:custom.messagesTable}
+    CHAT_MEMBERS_TABLE: ${self:custom.chatMembersTable}
+    MEDIA_TABLE: ${self:custom.mediaTable}
+    FRIENDS_TABLE: ${self:custom.friendsTable}
+    PINGS_TABLE: ${self:custom.pingsTable}
+    RECIPIENTS_TABLE: ${self:custom.recipientsTable}
 
 functions:
-	test_auth:
-		handler: auth/testAuth.endpoint_test_auth
-		events:
-			— http:
-			path: /testauth
-			method: get
-			authorizer:
-				type: COGNITO_USER_POOLS
-				authorizerId:
-				Ref: ApiGatewayAuthorizer
-	testGetUser:
-		handler: general/general.get_user
-		events:
-			- http:
-					path: /users/test/{user_id}
-					method: get
+  test_auth:
+    handler: auth/testAuth.endpoint_test_auth
+    events:
+      — http:
+      path: /testauth
+      method: get
+      authorizer:
+        type: COGNITO_USER_POOLS
+        authorizerId:
+        Ref: ApiGatewayAuthorizer
+  testGetUser:
+    handler: general/general.get_user
+    events:
+      - http:
+          path: /users/test/{user_id}
+          method: get
 
-	testCreateUser:
-		handler: general/general.create_user
-		events:
-			- http:
-					path: /users/test
-					method: post
-	testHello:
-		handler: general/hello.handler
-		events:
-			- http:
-					path: /test
-					method: get
+  testCreateUser:
+    handler: general/general.create_user
+    events:
+      - http:
+          path: /users/test
+          method: post
+  testHello:
+    handler: general/hello.handler
+    events:
+      - http:
+          path: /test
+          method: get
 
-	sendGroupMessage:
-		name: ${self:custom.functionPrefix}-sendGroupMessage
-		handler: src/functions/sendGroupMessage.handler
-		events:
-			- http:
-					path: group-chat
-					method: post
-					cors: true
-					integration: lambda
-					request:
-						passThrough: NEVER
-						template:
-							application/json: |
-								#set($inputRoot = $input.path('$'))
-								{
-									"userId": "$context.authorizer.claims.sub",
-									"message": "$inputRoot.message"
-								}
-	updateUserActivity:
-		name: ${self:custom.functionPrefix}-updateUserActivity
-		handler: src/functions/updateUserActivity.handler
-		events:
-			- http:
-					path: user/last-activity
-					method: put
-					cors: true
-					integration: lambda
-					request:
-						passThrough: NEVER
-						template:
-							application/json: |
-								{
-									"userId": "$context.authorizer.claims.sub"
-								}
-	acceptInvite:
-		name: ${self:custom.functionPrefix}-acceptInvite
-		handler: src/functions/acceptInvite.handler
-		events:
-			- http:
-					path: invites/accept
-					method: post
-					cors: true
-					integration: lambda
-					request:
-						passThrough: NEVER
-						template:
-							application/json: |
-								#set($inputRoot = $input.path('$'))
-								{
-									"senderId": "$context.authorizer.claims.sub",
-									"receiverId": "$inputRoot.userId"
-								}
-	createUser:
-		name: ${self:custom.functionPrefix}-createUser
-		handler: src/functions/createUser.handler
-		events:
-			- cognitoUserPool:
-					pool: MyUserPool
-					trigger: PostConfirmation
-	getChats:
-		name: ${self:custom.functionPrefix}-getChats
-		handler: src/functions/getChats.handler
-		events:
-			- http:
-					path: user/chats
-					method: get
-					cors: true
-					integration: lambda
-					request:
-						passThrough: NEVER
-						template:
-							application/json: |
-								{
-									"userId": "$context.authorizer.claims.sub"
-								}
-	getInvites:
-		name: ${self:custom.functionPrefix}-getInvites
-		handler: src/functions/getInvites.handler
-		events:
-			- http:
-					path: user/invites
-					method: get
-					cors: true
-					integration: lambda
-					request:
-						passThrough: NEVER
-						template:
-							application/json: |
-								{
-									"userId": "$context.authorizer.claims.sub"
-								}
-	deleteChat:
-		name: ${self:custom.functionPrefix}-deleteChat
-		handler: src/functions/deleteChat.handler
-		events:
-			- http:
-					path: user/chats/{userId}
-					method: delete
-					cors: true
-					integration: lambda
-					request:
-						passThrough: NEVER
-						template:
-							application/json: |
-								{
-									"userId": "$context.authorizer.claims.sub",
-									"otherUserId": "$input.params('userId')"
-								}
-	getMessages:
-		name: ${self:custom.functionPrefix}-getMessages
-		handler: src/functions/getMessages.handler
-		events:
-			- http:
-					path: user/chats/{userId}/messages
-					method: get
-					cors: true
-					integration: lambda
-					request:
-						passThrough: NEVER
-						template:
-							application/json: |
-								{
-									"userId": "$context.authorizer.claims.sub",
-									"otherUserId": "$input.params('userId')"
-								}
-	getOnlineUsers:
-		name: ${self:custom.functionPrefix}-getOnlineUsers
-		handler: src/functions/getOnlineUsers.handler
-		events:
-			- http:
-					path: users/online
-					method: get
-					cors: true
-					integration: lambda
-					request:
-						passThrough: NEVER
-						template:
-							application/json: |
-								{
-									"timeLimit": 60,
-									"userId": "$context.authorizer.claims.sub"
-								}
-	getUser:
-		name: ${self:custom.functionPrefix}-getUser
-		handler: src/functions/getUser.handler
-		events:
-			- http:
-					path: user
-					method: get
-					cors: true
-					integration: lambda
-					request:
-						passThrough: NEVER
-						template:
-							application/json: |
-								{
-									"userId": "$context.authorizer.claims.sub"
-								}
-	deleteUser:
-		name: ${self:custom.functionPrefix}-deleteUser
-		handler: src/functions/deleteUser.handler
-		events:
-			- http:
-					path: user
-					method: delete
-					cors: true
-					integration: lambda
-					request:
-						passThrough: NEVER
-						template:
-							application/json: |
-								#set($inputRoot = $input.path('$'))
-								{
-									"userId": "$context.authorizer.claims.sub"
-								}
-	sendInvite:
-		name: ${self:custom.functionPrefix}-sendInvite
-		handler: src/functions/sendInvite.handler
-		events:
-			- http:
-					path: invites/send
-					method: post
-					cors: true
-					integration: lambda
-					request:
-						passThrough: NEVER
-						template:
-							application/json: |
-								#set($inputRoot = $input.path('$'))
-								{
-									"senderId": "$context.authorizer.claims.sub",
-									"username": "$inputRoot.username",
-									"userId": "$inputRoot.userId"
-								}
-	sendMessage:
-		name: ${self:custom.functionPrefix}-sendMessage
-		handler: src/functions/sendMessage.handler
-		events:
-			- http:
-					path: user/chats/{userId}/messages
-					method: post
-					cors: true
-					integration: lambda
-					request:
-						passThrough: NEVER
-						template:
-							application/json: |
-								#set($inputRoot = $input.path('$'))
-								{
-									"messageBody": "$inputRoot.messageBody",
-									"senderId": "$context.authorizer.claims.sub",
-									"receiverId": "$input.params('userId')"
-								}
+  sendGroupMessage:
+    name: ${self:custom.functionPrefix}-sendGroupMessage
+    handler: src/functions/sendGroupMessage.handler
+    events:
+      - http:
+          path: group-chat
+          method: post
+          cors: true
+          integration: lambda
+          request:
+            passThrough: NEVER
+            template:
+              application/json: |
+                #set($inputRoot = $input.path('$'))
+                {
+                  "userId": "$context.authorizer.claims.sub",
+                  "message": "$inputRoot.message"
+                }
+  updateUserActivity:
+    name: ${self:custom.functionPrefix}-updateUserActivity
+    handler: src/functions/updateUserActivity.handler
+    events:
+      - http:
+          path: user/last-activity
+          method: put
+          cors: true
+          integration: lambda
+          request:
+            passThrough: NEVER
+            template:
+              application/json: |
+                {
+                  "userId": "$context.authorizer.claims.sub"
+                }
+  acceptInvite:
+    name: ${self:custom.functionPrefix}-acceptInvite
+    handler: src/functions/acceptInvite.handler
+    events:
+      - http:
+          path: invites/accept
+          method: post
+          cors: true
+          integration: lambda
+          request:
+            passThrough: NEVER
+            template:
+              application/json: |
+                #set($inputRoot = $input.path('$'))
+                {
+                  "senderId": "$context.authorizer.claims.sub",
+                  "receiverId": "$inputRoot.userId"
+                }
+  createUser:
+    name: ${self:custom.functionPrefix}-createUser
+    handler: src/functions/createUser.handler
+    events:
+      - cognitoUserPool:
+          pool: MyUserPool
+          trigger: PostConfirmation
+  getChats:
+    name: ${self:custom.functionPrefix}-getChats
+    handler: src/functions/getChats.handler
+    events:
+      - http:
+          path: user/chats
+          method: get
+          cors: true
+          integration: lambda
+          request:
+            passThrough: NEVER
+            template:
+              application/json: |
+                {
+                  "userId": "$context.authorizer.claims.sub"
+                }
+  getInvites:
+    name: ${self:custom.functionPrefix}-getInvites
+    handler: src/functions/getInvites.handler
+    events:
+      - http:
+          path: user/invites
+          method: get
+          cors: true
+          integration: lambda
+          request:
+            passThrough: NEVER
+            template:
+              application/json: |
+                {
+                  "userId": "$context.authorizer.claims.sub"
+                }
+  deleteChat:
+    name: ${self:custom.functionPrefix}-deleteChat
+    handler: src/functions/deleteChat.handler
+    events:
+      - http:
+          path: user/chats/{userId}
+          method: delete
+          cors: true
+          integration: lambda
+          request:
+            passThrough: NEVER
+            template:
+              application/json: |
+                {
+                  "userId": "$context.authorizer.claims.sub",
+                  "otherUserId": "$input.params('userId')"
+                }
+  getMessages:
+    name: ${self:custom.functionPrefix}-getMessages
+    handler: src/functions/getMessages.handler
+    events:
+      - http:
+          path: user/chats/{userId}/messages
+          method: get
+          cors: true
+          integration: lambda
+          request:
+            passThrough: NEVER
+            template:
+              application/json: |
+                {
+                  "userId": "$context.authorizer.claims.sub",
+                  "otherUserId": "$input.params('userId')"
+                }
+  getOnlineUsers:
+    name: ${self:custom.functionPrefix}-getOnlineUsers
+    handler: src/functions/getOnlineUsers.handler
+    events:
+      - http:
+          path: users/online
+          method: get
+          cors: true
+          integration: lambda
+          request:
+            passThrough: NEVER
+            template:
+              application/json: |
+                {
+                  "timeLimit": 60,
+                  "userId": "$context.authorizer.claims.sub"
+                }
+  getUser:
+    name: ${self:custom.functionPrefix}-getUser
+    handler: src/functions/getUser.handler
+    events:
+      - http:
+          path: user
+          method: get
+          cors: true
+          integration: lambda
+          request:
+            passThrough: NEVER
+            template:
+              application/json: |
+                {
+                  "userId": "$context.authorizer.claims.sub"
+                }
+  deleteUser:
+    name: ${self:custom.functionPrefix}-deleteUser
+    handler: src/functions/deleteUser.handler
+    events:
+      - http:
+          path: user
+          method: delete
+          cors: true
+          integration: lambda
+          request:
+            passThrough: NEVER
+            template:
+              application/json: |
+                #set($inputRoot = $input.path('$'))
+                {
+                  "userId": "$context.authorizer.claims.sub"
+                }
+  sendInvite:
+    name: ${self:custom.functionPrefix}-sendInvite
+    handler: src/functions/sendInvite.handler
+    events:
+      - http:
+          path: invites/send
+          method: post
+          cors: true
+          integration: lambda
+          request:
+            passThrough: NEVER
+            template:
+              application/json: |
+                #set($inputRoot = $input.path('$'))
+                {
+                  "senderId": "$context.authorizer.claims.sub",
+                  "username": "$inputRoot.username",
+                  "userId": "$inputRoot.userId"
+                }
+  sendMessage:
+    name: ${self:custom.functionPrefix}-sendMessage
+    handler: src/functions/sendMessage.handler
+    events:
+      - http:
+          path: user/chats/{userId}/messages
+          method: post
+          cors: true
+          integration: lambda
+          request:
+            passThrough: NEVER
+            template:
+              application/json: |
+                #set($inputRoot = $input.path('$'))
+                {
+                  "messageBody": "$inputRoot.messageBody",
+                  "senderId": "$context.authorizer.claims.sub",
+                  "receiverId": "$input.params('userId')"
+                }
 
 resources:
-	Resources:
-		# Auth Requirements        
-		CognitoUserPoolMyUserPool:
-			Type: "AWS::Cognito::UserPool"
-			Properties:
-				AdminCreateUserConfig:
-					AllowAdminCreateUserOnly: False
-				AliasAttributes:
-					- email
-				AutoVerifiedAttributes:
-					- email
-				MfaConfiguration: OFF
-				Policies:
-					PasswordPolicy:
-						MinimumLength: 8
-						RequireLowercase: true
-						RequireNumbers: true
-						RequireSymbols: false
-						RequireUppercase: true
-				UserPoolName: ${self:custom.functionPrefix}
-				Schema:
-					- Name: email
-						AttributeDataType: String
-						DeveloperOnlyAttribute: false
-						Mutable: true
-						Required: true
-		AppUserPoolWebClient:
-			Type: "AWS::Cognito::UserPoolClient"
-			Properties:
-				ClientName: Web
-				GenerateSecret: false
-				ReadAttributes:
-					- "email"
-				UserPoolId:
-					Ref: CognitoUserPoolMyUserPool
-				WriteAttributes:
-					- "email"
-		AppCognitoIdentityPool:
-			Type: "AWS::Cognito::IdentityPool"
-			Properties:
-				IdentityPoolName: ${self:custom.identityPool}
-				AllowUnauthenticatedIdentities: true
-				CognitoIdentityProviders:
-					- ProviderName:
-							'Fn::GetAtt': [ CognitoUserPoolMyUserPool, ProviderName ]
-						ClientId:
-							Ref: AppUserPoolWebClient
-		cognitoAuthRole:
-			Type: 'AWS::IAM::Role'
-			Properties:
-				RoleName: ${self:custom.identityPool}_Auth_Role
-				AssumeRolePolicyDocument:
-					Version: '2012-10-17'
-					Statement:
-						- Effect: Allow
-							Principal:
-								Federated: cognito-identity.amazonaws.com
-							Action: [ 'sts:AssumeRoleWithWebIdentity' ]
-							Condition:
-								StringEquals:
-									'cognito-identity.amazonaws.com:aud':
-										Ref: AppCognitoIdentityPool
-								'ForAnyValue:StringLike':
-										'cognito-identity.amazonaws.com:amr': authenticated
-				Policies:
-					- PolicyName: cognitoauth
-						PolicyDocument:
-							Version: '2012-10-17'
-							Statement:
-								- Effect: Allow
-									Action:
-									- 'iot:Connect'
-									- 'iot:Subscribe'
-									Resource:
-									- "*"
-		cognitoUnauthRole:
-			Type: 'AWS::IAM::Role'
-			Properties:
-				RoleName: ${self:custom.identityPool}_Unauth_Role
-				AssumeRolePolicyDocument:
-					Version: '2012-10-17'
-					Statement:
-						- Effect: Allow
-							Principal:
-								Federated: cognito-identity.amazonaws.com
-							Action: [ 'sts:AssumeRoleWithWebIdentity' ]
-							Condition:
-								StringEquals:
-									'cognito-identity.amazonaws.com:aud':
-										Ref: AppCognitoIdentityPool
-								'ForAnyValue:StringLike':
-										'cognito-identity.amazonaws.com:amr': unauthenticated
-				Policies:
-					- PolicyName: cognitounauth
-						PolicyDocument:
-							Version: '2012-10-17'
-							Statement:
-								- Effect: Allow
-									Action:
-									- 'iot:Connect'
-									- 'iot:Subscribe'
-									- 'iot:*'
-									- 'mobileanalytics:PutEvents'
-									- 'cognito-sync:*'
-									Resource:
-									- "*"
-		myApiIdentityPoolRoleAttachment:
-			DependsOn: [ AppCognitoIdentityPool, cognitoUnauthRole, cognitoAuthRole ]
-			Type: "AWS::Cognito::IdentityPoolRoleAttachment"
-			Properties:
-				IdentityPoolId:
-					Ref: AppCognitoIdentityPool
-				Roles:
-					unauthenticated:
-						'Fn::GetAtt': [ cognitoUnauthRole, Arn ]
-					authenticated:
-						'Fn::GetAtt': [ cognitoAuthRole, Arn]    
-		DeleteUserLambdaFunction:
-			Type: "AWS::Lambda::Function"
-			Properties:
-				Environment:
-					Variables:
-						USER_POOL_ID:
-							Ref: CognitoUserPoolMyUserPool
+  Resources:
+    # Auth Requirements        
+    CognitoUserPoolMyUserPool:
+      Type: "AWS::Cognito::UserPool"
+      Properties:
+        AdminCreateUserConfig:
+          AllowAdminCreateUserOnly: False
+        AliasAttributes:
+          - email
+        AutoVerifiedAttributes:
+          - email
+        MfaConfiguration: OFF
+        Policies:
+          PasswordPolicy:
+            MinimumLength: 8
+            RequireLowercase: true
+            RequireNumbers: true
+            RequireSymbols: false
+            RequireUppercase: true
+        UserPoolName: ${self:custom.functionPrefix}
+        Schema:
+          - Name: email
+            AttributeDataType: String
+            DeveloperOnlyAttribute: false
+            Mutable: true
+            Required: true
+    AppUserPoolWebClient:
+      Type: "AWS::Cognito::UserPoolClient"
+      Properties:
+        ClientName: Web
+        GenerateSecret: false
+        ReadAttributes:
+          - "email"
+        UserPoolId:
+          Ref: CognitoUserPoolMyUserPool
+        WriteAttributes:
+          - "email"
+    AppCognitoIdentityPool:
+      Type: "AWS::Cognito::IdentityPool"
+      Properties:
+        IdentityPoolName: ${self:custom.identityPool}
+        AllowUnauthenticatedIdentities: true
+        CognitoIdentityProviders:
+          - ProviderName:
+              'Fn::GetAtt': [ CognitoUserPoolMyUserPool, ProviderName ]
+            ClientId:
+              Ref: AppUserPoolWebClient
+    cognitoAuthRole:
+      Type: 'AWS::IAM::Role'
+      Properties:
+        RoleName: ${self:custom.identityPool}_Auth_Role
+        AssumeRolePolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Principal:
+                Federated: cognito-identity.amazonaws.com
+              Action: [ 'sts:AssumeRoleWithWebIdentity' ]
+              Condition:
+                StringEquals:
+                  'cognito-identity.amazonaws.com:aud':
+                    Ref: AppCognitoIdentityPool
+                'ForAnyValue:StringLike':
+                    'cognito-identity.amazonaws.com:amr': authenticated
+        Policies:
+          - PolicyName: cognitoauth
+            PolicyDocument:
+              Version: '2012-10-17'
+              Statement:
+                - Effect: Allow
+                  Action:
+                  - 'iot:Connect'
+                  - 'iot:Subscribe'
+                  Resource:
+                  - "*"
+    cognitoUnauthRole:
+      Type: 'AWS::IAM::Role'
+      Properties:
+        RoleName: ${self:custom.identityPool}_Unauth_Role
+        AssumeRolePolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Principal:
+                Federated: cognito-identity.amazonaws.com
+              Action: [ 'sts:AssumeRoleWithWebIdentity' ]
+              Condition:
+                StringEquals:
+                  'cognito-identity.amazonaws.com:aud':
+                    Ref: AppCognitoIdentityPool
+                'ForAnyValue:StringLike':
+                    'cognito-identity.amazonaws.com:amr': unauthenticated
+        Policies:
+          - PolicyName: cognitounauth
+            PolicyDocument:
+              Version: '2012-10-17'
+              Statement:
+                - Effect: Allow
+                  Action:
+                  - 'iot:Connect'
+                  - 'iot:Subscribe'
+                  - 'iot:*'
+                  - 'mobileanalytics:PutEvents'
+                  - 'cognito-sync:*'
+                  Resource:
+                  - "*"
+    myApiIdentityPoolRoleAttachment:
+      DependsOn: [ AppCognitoIdentityPool, cognitoUnauthRole, cognitoAuthRole ]
+      Type: "AWS::Cognito::IdentityPoolRoleAttachment"
+      Properties:
+        IdentityPoolId:
+          Ref: AppCognitoIdentityPool
+        Roles:
+          unauthenticated:
+            'Fn::GetAtt': [ cognitoUnauthRole, Arn ]
+          authenticated:
+            'Fn::GetAtt': [ cognitoAuthRole, Arn]    
+    DeleteUserLambdaFunction:
+      Type: "AWS::Lambda::Function"
+      Properties:
+        Environment:
+          Variables:
+            USER_POOL_ID:
+              Ref: CognitoUserPoolMyUserPool
 
-		# API Auth requirements
-		ApiGatewayMethodGroupDashchatPost:
-			Type: "AWS::ApiGateway::Method"
-			Properties:
-				AuthorizationType: COGNITO_USER_POOLS
-				AuthorizerId:
-					Ref: ApiGatewayAuthorizer
-		ApiGatewayMethodUserDelete:
-			Type: "AWS::ApiGateway::Method"
-			Properties:
-				AuthorizationType: COGNITO_USER_POOLS
-				AuthorizerId:
-					Ref: ApiGatewayAuthorizer
-		ApiGatewayMethodUserChatsUseridVarDelete:
-			Type: "AWS::ApiGateway::Method"
-			Properties:
-				AuthorizationType: COGNITO_USER_POOLS
-				AuthorizerId:
-					Ref: ApiGatewayAuthorizer
-		ApiGatewayMethodUserLastDashactivityPut:
-			Type: "AWS::ApiGateway::Method"
-			Properties:
-				AuthorizationType: COGNITO_USER_POOLS
-				AuthorizerId:
-					Ref: ApiGatewayAuthorizer
-		ApiGatewayMethodUserGet:
-			Type: "AWS::ApiGateway::Method"
-			Properties:
-				AuthorizationType: COGNITO_USER_POOLS
-				AuthorizerId:
-					Ref: ApiGatewayAuthorizer
-		ApiGatewayMethodUserInvitesGet:
-			Type: "AWS::ApiGateway::Method"
-			Properties:
-				AuthorizationType: COGNITO_USER_POOLS
-				AuthorizerId:
-					Ref: ApiGatewayAuthorizer
-		ApiGatewayMethodUsersOnlineGet:
-			Type: "AWS::ApiGateway::Method"
-			Properties:
-				AuthorizationType: COGNITO_USER_POOLS
-				AuthorizerId:
-					Ref: ApiGatewayAuthorizer
-		ApiGatewayMethodInvitesSendPost:
-			Type: "AWS::ApiGateway::Method"
-			Properties:
-				AuthorizationType: COGNITO_USER_POOLS
-				AuthorizerId:
-					Ref: ApiGatewayAuthorizer
-		ApiGatewayMethodInvitesAcceptPost:
-			Type: "AWS::ApiGateway::Method"
-			Properties:
-				AuthorizationType: COGNITO_USER_POOLS
-				AuthorizerId:
-					Ref: ApiGatewayAuthorizer
-		ApiGatewayMethodUserChatsGet:
-			Type: "AWS::ApiGateway::Method"
-			Properties:
-				AuthorizationType: COGNITO_USER_POOLS
-				AuthorizerId:
-					Ref: ApiGatewayAuthorizer
-		ApiGatewayMethodUserChatsUseridVarMessagesPost:
-			Type: "AWS::ApiGateway::Method"
-			Properties:
-				AuthorizationType: COGNITO_USER_POOLS
-				AuthorizerId:
-					Ref: ApiGatewayAuthorizer
-		ApiGatewayMethodUserChatsUseridVarMessagesGet:
-			Type: "AWS::ApiGateway::Method"
-			Properties:
-				AuthorizationType: COGNITO_USER_POOLS
-				AuthorizerId:
-					Ref: ApiGatewayAuthorizer
-		ApiGatewayAuthorizer:
-			Type: "AWS::ApiGateway::Authorizer"
-			Properties:
-				Name: UserPool
-				ProviderARNs:
-					- 'Fn::GetAtt': [ CognitoUserPoolMyUserPool, Arn ]
-				RestApiId:
-					Ref: ApiGatewayRestApi
-				IdentitySource: "method.request.header.Authorization"
-				Type: COGNITO_USER_POOLS
-		
-		# DB stuff
-		UsersTable:
-			Type: 'AWS::DynamoDB::Table'
-			Properties:
-				AttributeDefinitions:
-					- AttributeName: userId
-						AttributeType: S
-					- AttributeName: username
-						AttributeType: S
-				GlobalSecondaryIndexes:
-					- IndexName: username-index
-						KeySchema:
-							- AttributeName: username
-								KeyType: HASH
-						Projection:
-							ProjectionType: ALL
-						ProvisionedThroughput:
-							ReadCapacityUnits: 5
-							WriteCapacityUnits: 5
-				KeySchema:
-					- AttributeName: userId
-						KeyType: HASH
-				ProvisionedThroughput:
-					ReadCapacityUnits: 5
-					WriteCapacityUnits: 5
-				TableName: ${self:custom.usersTable}
-		ChatsTable:
-			Type: "AWS::DynamoDB::Table"
-			Properties:
-				AttributeDefinitions:
-					- AttributeName: chatId
-						AttributeType: S
-				KeySchema:
-					- AttributeName: chatId
-						KeyType: HASH
-				ProvisionedThroughput:
-					ReadCapacityUnits: 5
-					WriteCapacityUnits: 5
-				TableName: ${self:custom.chatsTable}
-		MessagesTable:
-			Type: "AWS::DynamoDB::Table"
-			Properties:
-				AttributeDefinitions:
-					- AttributeName: messageId
-						AttributeType: S
-				KeySchema:
-					- AttributeName: messageId
-						KeyType: HASH
-				ProvisionedThroughput:
-					ReadCapacityUnits: 5
-					WriteCapacityUnits: 5
-				TableName: ${self:custom.messagesTable}
-		ChatMembersTable:
-			Type: "AWS::DynamoDB::Table"
-			Properties:
-				AttributeDefinitions:
-					- AttributeName: chatMemberId
-						AttributeType: S
-				KeySchema:
-					- AttributeName: chatMemberId
-						KeyType: HASH
-				ProvisionedThroughput:
-					ReadCapacityUnits: 5
-					WriteCapacityUnits: 5
-				TableName: ${self:custom.chatMembersTable}
-		MediaTable:
-			Type: "AWS::DynamoDB::Table"
-			Properties:
-				AttributeDefinitions:
-					- AttributeName: mediaId
-						AttributeType: S
-				KeySchema:
-					- AttributeName: mediaId
-						KeyType: HASH
-				ProvisionedThroughput:
-					ReadCapacityUnits: 5
-					WriteCapacityUnits: 5
-				TableName: ${self:custom.mediaTable}
-		FriendsTable:
-			Type: "AWS::DynamoDB::Table"
-			Properties:
-				AttributeDefinitions:
-					- AttributeName: friendLinkId
-						AttributeType: S
-				KeySchema:
-					- AttributeName: friendLinkId
-						KeyType: HASH
-				ProvisionedThroughput:
-					ReadCapacityUnits: 5
-					WriteCapacityUnits: 5
-				TableName: ${self:custom.friendsTable}
-		PingsTable:
-			Type: "AWS::DynamoDB::Table"
-			Properties:
-				AttributeDefinitions:
-					- AttributeName: pingId
-						AttributeType: S
-				KeySchema:
-					- AttributeName: pingId
-						KeyType: HASH
-				ProvisionedThroughput:
-					ReadCapacityUnits: 5
-					WriteCapacityUnits: 5
-				TableName: ${self:custom.pingsTable}
-		RecipientsTable:
-			Type: "AWS::DynamoDB::Table"
-			Properties:
-				AttributeDefinitions:        
-					- AttributeName: recipientId
-						AttributeType: S
-				KeySchema:
-					- AttributeName: recipientId
-						KeyType: HASH
-				ProvisionedThroughput:
-					ReadCapacityUnits: 5
-					WriteCapacityUnits: 5
-				TableName: ${self:custom.recipientsTable}
+    # API Auth requirements
+    ApiGatewayMethodGroupDashchatPost:
+      Type: "AWS::ApiGateway::Method"
+      Properties:
+        AuthorizationType: COGNITO_USER_POOLS
+        AuthorizerId:
+          Ref: ApiGatewayAuthorizer
+    ApiGatewayMethodUserDelete:
+      Type: "AWS::ApiGateway::Method"
+      Properties:
+        AuthorizationType: COGNITO_USER_POOLS
+        AuthorizerId:
+          Ref: ApiGatewayAuthorizer
+    ApiGatewayMethodUserChatsUseridVarDelete:
+      Type: "AWS::ApiGateway::Method"
+      Properties:
+        AuthorizationType: COGNITO_USER_POOLS
+        AuthorizerId:
+          Ref: ApiGatewayAuthorizer
+    ApiGatewayMethodUserLastDashactivityPut:
+      Type: "AWS::ApiGateway::Method"
+      Properties:
+        AuthorizationType: COGNITO_USER_POOLS
+        AuthorizerId:
+          Ref: ApiGatewayAuthorizer
+    ApiGatewayMethodUserGet:
+      Type: "AWS::ApiGateway::Method"
+      Properties:
+        AuthorizationType: COGNITO_USER_POOLS
+        AuthorizerId:
+          Ref: ApiGatewayAuthorizer
+    ApiGatewayMethodUserInvitesGet:
+      Type: "AWS::ApiGateway::Method"
+      Properties:
+        AuthorizationType: COGNITO_USER_POOLS
+        AuthorizerId:
+          Ref: ApiGatewayAuthorizer
+    ApiGatewayMethodUsersOnlineGet:
+      Type: "AWS::ApiGateway::Method"
+      Properties:
+        AuthorizationType: COGNITO_USER_POOLS
+        AuthorizerId:
+          Ref: ApiGatewayAuthorizer
+    ApiGatewayMethodInvitesSendPost:
+      Type: "AWS::ApiGateway::Method"
+      Properties:
+        AuthorizationType: COGNITO_USER_POOLS
+        AuthorizerId:
+          Ref: ApiGatewayAuthorizer
+    ApiGatewayMethodInvitesAcceptPost:
+      Type: "AWS::ApiGateway::Method"
+      Properties:
+        AuthorizationType: COGNITO_USER_POOLS
+        AuthorizerId:
+          Ref: ApiGatewayAuthorizer
+    ApiGatewayMethodUserChatsGet:
+      Type: "AWS::ApiGateway::Method"
+      Properties:
+        AuthorizationType: COGNITO_USER_POOLS
+        AuthorizerId:
+          Ref: ApiGatewayAuthorizer
+    ApiGatewayMethodUserChatsUseridVarMessagesPost:
+      Type: "AWS::ApiGateway::Method"
+      Properties:
+        AuthorizationType: COGNITO_USER_POOLS
+        AuthorizerId:
+          Ref: ApiGatewayAuthorizer
+    ApiGatewayMethodUserChatsUseridVarMessagesGet:
+      Type: "AWS::ApiGateway::Method"
+      Properties:
+        AuthorizationType: COGNITO_USER_POOLS
+        AuthorizerId:
+          Ref: ApiGatewayAuthorizer
+    ApiGatewayAuthorizer:
+      Type: "AWS::ApiGateway::Authorizer"
+      Properties:
+        Name: UserPool
+        ProviderARNs:
+          - 'Fn::GetAtt': [ CognitoUserPoolMyUserPool, Arn ]
+        RestApiId:
+          Ref: ApiGatewayRestApi
+        IdentitySource: "method.request.header.Authorization"
+        Type: COGNITO_USER_POOLS
+    
+    # DB stuff
+    UsersTable:
+      Type: 'AWS::DynamoDB::Table'
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: userId
+            AttributeType: S
+          - AttributeName: username
+            AttributeType: S
+        GlobalSecondaryIndexes:
+          - IndexName: username-index
+            KeySchema:
+              - AttributeName: username
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+            ProvisionedThroughput:
+              ReadCapacityUnits: 5
+              WriteCapacityUnits: 5
+        KeySchema:
+          - AttributeName: userId
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
+        TableName: ${self:custom.usersTable}
+    ChatsTable:
+      Type: "AWS::DynamoDB::Table"
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: chatId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: chatId
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
+        TableName: ${self:custom.chatsTable}
+    MessagesTable:
+      Type: "AWS::DynamoDB::Table"
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: messageId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: messageId
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
+        TableName: ${self:custom.messagesTable}
+    ChatMembersTable:
+      Type: "AWS::DynamoDB::Table"
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: chatMemberId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: chatMemberId
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
+        TableName: ${self:custom.chatMembersTable}
+    MediaTable:
+      Type: "AWS::DynamoDB::Table"
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: mediaId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: mediaId
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
+        TableName: ${self:custom.mediaTable}
+    FriendsTable:
+      Type: "AWS::DynamoDB::Table"
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: friendLinkId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: friendLinkId
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
+        TableName: ${self:custom.friendsTable}
+    PingsTable:
+      Type: "AWS::DynamoDB::Table"
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: pingId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: pingId
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
+        TableName: ${self:custom.pingsTable}
+    RecipientsTable:
+      Type: "AWS::DynamoDB::Table"
+      Properties:
+        AttributeDefinitions:        
+          - AttributeName: recipientId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: recipientId
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
+        TableName: ${self:custom.recipientsTable}
 
-	Outputs:
-		UserPoolId:
-			Description: User Pool ID for app to use
-			Value:
-				Ref: CognitoUserPoolMyUserPool
-		UserPoolAppClient:
-			Description: App Client ID for app to use
-			Value:
-				Ref: AppUserPoolWebClient
-		IotChannel:
-			Description: Root channel that all app communication goes under
-			Value: ${self:provider.environment.IOT_CHANNEL}
-		IdentityPoolId:
-			Description: Identity Pool ID for app to use
-			Value:
-				Ref: AppCognitoIdentityPool
+  Outputs:
+    UserPoolId:
+      Description: User Pool ID for app to use
+      Value:
+        Ref: CognitoUserPoolMyUserPool
+    UserPoolAppClient:
+      Description: App Client ID for app to use
+      Value:
+        Ref: AppUserPoolWebClient
+    IotChannel:
+      Description: Root channel that all app communication goes under
+      Value: ${self:provider.environment.IOT_CHANNEL}
+    IdentityPoolId:
+      Description: Identity Pool ID for app to use
+      Value:
+        Ref: AppCognitoIdentityPool
