@@ -72,13 +72,13 @@ functions:
   test_auth:
     handler: auth/testAuth.endpoint_test_auth
     events:
-      — http:
-      path: /testauth
-      method: get
-      authorizer:
-        type: COGNITO_USER_POOLS
-        authorizerId:
-        Ref: ApiGatewayAuthorizer
+      - http:
+        path: /testauth
+        method: get
+        authorizer:
+          type: COGNITO_USER_POOLS
+          authorizerId:
+          Ref: ApiGatewayAuthorizer
   testGetUser:
     handler: general/general.get_user
     events:
