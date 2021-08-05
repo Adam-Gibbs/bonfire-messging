@@ -8,16 +8,6 @@ import botocore.exceptions
 
 USER_POOL_ID = 'eu-west-2_xUNInjJwa'
 CLIENT_ID = '8gjhsrum4alfi1u9i6prargi2'
-# CLIENT_SECRET = ''
-
-# def get_secret_hash(username):
-# 	msg = username + CLIENT_ID
-# 	dig = hmac.new(str(CLIENT_SECRET).encode('utf-8'),
-# 		msg = str(msg).encode('utf-8'), digestmod=hashlib.sha256).digest()
-
-# 	d2 = base64.b64encode(dig).decode()
-# 	return d2
-
 
 def lambda_handler(event, context):
     for field in ["username", "email", "password"]:
