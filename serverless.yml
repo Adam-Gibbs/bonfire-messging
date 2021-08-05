@@ -69,24 +69,24 @@ provider:
     RECIPIENTS_TABLE: ${self:custom.recipientsTable}
 
 functions:
-  helloGetUser:
+  testGetUser:
     handler: general/general.get_user
     events:
       - http:
-          path: /users/{user_id}
+          path: /users/test/{user_id}
           method: get
 
-  helloCreateUser:
+  testCreateUser:
     handler: general/general.create_user
     events:
       - http:
-          path: /users
+          path: /users/test
           method: post
-  hello:
+  testHello:
     handler: general/hello.handler
     events:
       - http:
-          path: /
+          path: /test
           method: get
 
   sendGroupMessage:
