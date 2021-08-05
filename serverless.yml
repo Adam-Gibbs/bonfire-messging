@@ -73,7 +73,7 @@ functions:
     handler: endpoints/auth/signup.lambda_handler
     events:
       - http:
-          path: /testauth
+          path: /signup
           method: get
           authorizer:
             type: COGNITO_USER_POOLS
@@ -83,7 +83,7 @@ functions:
     handler: endpoints/auth/confirmSignup.lambda_handler
     events:
       - http:
-          path: /testauth
+          path: /confirm
           method: get
           authorizer:
             type: COGNITO_USER_POOLS
