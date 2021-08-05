@@ -1,5 +1,6 @@
 import json
 import boto3
+from helpers.returns import generate_response
 
 USER_POOL_ID = 'eu-west-2_xUNInjJwa'
 CLIENT_ID = '8gjhsrum4alfi1u9i6prargi2'
@@ -22,16 +23,16 @@ def lambda_handler(event, context):
         print(response)
 
     except client.exceptions.UserNotFoundException:
-        return {"success": False, "message": "Username doesn't exists"}
+        generate_response(400, {"success": False, "message": "Username doesn't exists"})
         # return event
         
     except client.exceptions.CodeMismatchException:
-        return {"success": False, "message": "Invalid Verification code"}
+        generate_response(400, {"success": False, "message": "Invalid Verification code"})
         
     except client.exceptions.NotAuthorizedException:
-        return {"success": False, "message": "User is already confirmed"}
+        generate_response(400, {"success": False, "message": "User is already confirmed"})
     
     except Exception as e:
-        return {"success": False, "message": f"Unknown error {e.__str__()} "}
+        generate_response(400, {"success": False, "message": f"Unknown error {e.__str__()} "})
       
-    return event
+    generate_response(200, event)
