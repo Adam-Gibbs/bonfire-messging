@@ -38,7 +38,7 @@ package:
     - LICENSE.txt
     - '**/*'
   include:
-    - 'endpoints/*.py'
+    - 'endpoints/*/*.py'
 
 # Need to be more specific here with actions and resources
 provider:
