@@ -10,12 +10,6 @@ class DecimalEncoder(json.JSONEncoder):
 				return int(o)
 		return super(DecimalEncoder, self).default(o)
 
-def endpoint_test(event, context):
-	return generate_response(200, {"status": True})
-
-def endpoint_test_auth(event, context):
-	return generate_response(200, {"Hello world": True})
-
 def generate_response(status, body, headers={}):
 	return {
 		"statusCode": status,

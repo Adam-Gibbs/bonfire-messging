@@ -69,8 +69,29 @@ provider:
     RECIPIENTS_TABLE: ${self:custom.recipientsTable}
 
 functions:
+  signup:
+    handler: endpoints/auth/signup.lambda_handler
+    events:
+      - http:
+          path: /testauth
+          method: get
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+  confirm_signup:
+    handler: endpoints/auth/confirmSignup.lambda_handler
+    events:
+      - http:
+          path: /testauth
+          method: get
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+
   test_auth:
-    handler: auth/testAuth.endpoint_test_auth
+    handler: endpoints/auth/testAuth.endpoint_test_auth
     events:
       - http:
           path: /testauth
@@ -80,20 +101,20 @@ functions:
             authorizerId:
               Ref: ApiGatewayAuthorizer
   testGetUser:
-    handler: general/general.get_user
+    handler: endpoints/general/general.get_user
     events:
       - http:
           path: /users/test/{user_id}
           method: get
 
   testCreateUser:
-    handler: general/general.create_user
+    handler: endpoints/general/general.create_user
     events:
       - http:
           path: /users/test
           method: post
   testHello:
-    handler: general/hello.handler
+    handler: endpoints/general/hello.handler
     events:
       - http:
           path: /test
