@@ -1,17 +1,19 @@
 import boto3
+import json
 from endpoints.helpers.returns import generate_response
 
 USER_POOL_ID = 'eu-west-2_xUNInjJwa'
 CLIENT_ID = '8gjhsrum4alfi1u9i6prargi2'
 
 def lambda_handler(event, context):
-	params = event.get("body")
+	params = json.loads(event.get("body"))
 	for field in ["username", "email", "password"]:
 		print(f"checking {field}...")
 		if not params.get(field):
 			print("failed")
 			generate_response(400, {"success": False, 'message': f"{field} is not present", "data": None})
-		print("success")
+		else:
+			print("success")
 
 	username = params['username']
 	email = params["email"]
@@ -20,7 +22,7 @@ def lambda_handler(event, context):
 
 	client = boto3.client('cognito-idp')
 	try:
-		print("try")
+		print("Start try")
 		resp = client.sign_up(
 			ClientId=CLIENT_ID,
 			Username=username,
@@ -43,7 +45,7 @@ def lambda_handler(event, context):
 			]
 		)
 
-		print(resp)
+		print(f"Response: {resp}")
 	except client.exceptions.UsernameExistsException as e:
 		generate_response(400, {
 			"success": False,

@@ -1,10 +1,11 @@
+import json
 import boto3
 
 USER_POOL_ID = 'eu-west-2_xUNInjJwa'
 CLIENT_ID = '8gjhsrum4alfi1u9i6prargi2'
 
 def lambda_handler(event, context):
-    params = event.get("body")
+    params = json.loads(event.get("body"))
     client = boto3.client('cognito-idp')
     
     try:
