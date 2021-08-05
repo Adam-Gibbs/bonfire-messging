@@ -20,14 +20,13 @@ CLIENT_ID = '8gjhsrum4alfi1u9i6prargi2'
 
 
 def lambda_handler(event, context):
-    for field in ["username", "email", "password", "name"]:
+    for field in ["username", "email", "password"]:
         if not event.get(field):
             return {"error": False, "success": True, 'message': f"{field} is not present", "data": None}
 
     username = event['username']
     email = event["email"]
     password = event['password']
-    name = event["name"]
 
     client = boto3.client('cognito-idp')
     try:
@@ -36,10 +35,6 @@ def lambda_handler(event, context):
             Username=username,
             Password=password,
             UserAttributes=[
-                {
-                    'Name': "name",
-                    'Value': name
-                },
                 {
                     'Name': "email",
                     'Value': email

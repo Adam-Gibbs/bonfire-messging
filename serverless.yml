@@ -74,14 +74,14 @@ functions:
     events:
       - http:
           path: /signup
-          method: get
-          
+          method: post
+
   confirm_signup:
     handler: endpoints/auth/confirmSignup.lambda_handler
     events:
       - http:
           path: /confirm
-          method: get
+          method: post
 
   test_auth:
     handler: endpoints/auth/testAuth.endpoint_test_auth
