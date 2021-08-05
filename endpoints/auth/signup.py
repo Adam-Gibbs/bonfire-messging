@@ -1,13 +1,18 @@
 import boto3
+from endpoints.helpers.returns import generate_response
 
 USER_POOL_ID = 'eu-west-2_xUNInjJwa'
 CLIENT_ID = '8gjhsrum4alfi1u9i6prargi2'
 
 def lambda_handler(event, context):
-	print("start")
+	print(event)
+	print("\n\n\n")
 	for field in ["username", "email", "password"]:
+		print(f"checking {field}...")
 		if not event.get(field):
-			return {"success": False, 'message': f"{field} is not present", "data": None}
+			print("failed")
+			generate_response(400, {"success": False, 'message': f"{field} is not present", "data": None})
+		print("success")
 
 	username = event['username']
 	email = event["email"]
@@ -41,36 +46,36 @@ def lambda_handler(event, context):
 
 		print(resp)
 	except client.exceptions.UsernameExistsException as e:
-		return {
+		generate_response(400, {
 			"success": False,
 			"message": "This username already exists",
 			"data": None
-		}
+		})
 
 	except client.exceptions.InvalidPasswordException as e:
-		return {
+		generate_response(400, {
 			"success": False,
 			"message": "Password should have Caps,\
 						Special chars, Numbers",
 			"data": None
-		}
+		})
 
 	except client.exceptions.UserLambdaValidationException as e:
-		return {
+		generate_response(400, {
 			"success": False,
 			"message": "Email already exists",
 			"data": None
-		}
+		})
 
 	except Exception as e:
-		return {
+		generate_response(400, {
 			"success": False,
 			"message": str(e),
 			"data": None
-		}
+		})
 
-	return {
+	generate_response(200, {
 		"success": True,
 		"message": "Please confirm your signup, \
 					check Email for validation code",
-	}
+	})
