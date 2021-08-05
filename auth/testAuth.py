@@ -10,15 +10,15 @@ class DecimalEncoder(json.JSONEncoder):
 				return int(o)
 		return super(DecimalEncoder, self).default(o)
 
-	def endpoint_test(self, event, context):
-		return self.generate_response(200, {"status": True})
+def endpoint_test(event, context):
+	return generate_response(200, {"status": True})
 
-	def endpoint_test_auth(self, event, context):
-		return self.generate_response(200, {"Hello world": True})
+def endpoint_test_auth(event, context):
+	return generate_response(200, {"Hello world": True})
 
-	def generate_response(self ,status, body, headers={}):
-		return {
-			"statusCode": status,
-			"body": json.dumps(body, indent=4, cls=DecimalEncoder),
-			"headers": headers
-		}
+def generate_response(status, body, headers={}):
+	return {
+		"statusCode": status,
+		"body": json.dumps(body, indent=4, cls=DecimalEncoder),
+		"headers": headers
+	}
