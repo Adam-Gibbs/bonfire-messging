@@ -11,10 +11,7 @@ def get_path(event):
 
 
 def get_header_auth(event):
-    print(event)
-    print("\n\n\n\n")
-    print(event.get("Authorization"))
-    return event.get("Authorization")
+    return event.get("headers").get("Authorization")
 
 
 def required_fields(fields, event):
