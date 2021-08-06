@@ -73,7 +73,7 @@ functions:
     handler: endpoints/auth/confirmSignup.lambda_handler
     events:
       - http:
-          path: /auth/signup/confirm
+          path: /auth/confirm/signup
           method: post
 
   signup:
@@ -94,7 +94,7 @@ functions:
     handler: endpoints/auth/confirmForgotPassword.lambda_handler
     events:
       - http:
-          path: /auth/forgotPassword/confirm
+          path: /auth/confirm/forgotPassword
           method: post
 
   forgot_password:
