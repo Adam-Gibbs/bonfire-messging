@@ -250,14 +250,7 @@ resources:
           unauthenticated:
             'Fn::GetAtt': [ cognitoUnauthRole, Arn ]
           authenticated:
-            'Fn::GetAtt': [ cognitoAuthRole, Arn]    
-    DeleteUserLambdaFunction:
-      Type: "AWS::Lambda::Function"
-      Properties:
-        Environment:
-          Variables:
-            USER_POOL_ID:
-              Ref: CognitoUserPoolMyUserPool
+            'Fn::GetAtt': [ cognitoAuthRole, Arn]
 
     # API Auth requirements
     ApiGatewayAuthorizer:
