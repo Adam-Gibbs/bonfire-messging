@@ -11,7 +11,7 @@ def initiate_auth(client, username, password):
         resp = client.admin_initiate_auth(
             UserPoolId=endpoints.helpers.config.USER_POOL_ID,
             ClientId=endpoints.helpers.config.CLIENT_ID,
-            AuthFlow='USER_PASSWORD_AUTH',
+            AuthFlow='ADMIN_NO_SRP_AUTH',
             AuthParameters={
                 'USERNAME': username,
                 'PASSWORD': password,
