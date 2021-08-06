@@ -9,9 +9,8 @@ import authExceptions
 def initiate_auth(client, username, password):
     try:
         resp = client.admin_initiate_auth(
-            UserPoolId=endpoints.helpers.config.USER_POOL_ID,
             ClientId=endpoints.helpers.config.CLIENT_ID,
-            AuthFlow='ADMIN_NO_SRP_AUTH',
+            AuthFlow='USER_PASSWORD_AUTH',
             AuthParameters={
                 'USERNAME': username,
                 'PASSWORD': password,
