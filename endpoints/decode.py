@@ -7,12 +7,7 @@ import endpoints.helpers.config as config
 
 
 def decode_token(token):
-    jwks_url = 'https://cognito-idp.{}.amazonaws.com/{}/' \
-                '.well-known/jwks.json'.format(
-                        config.USER_POOL_LOC,
-                        config.USER_POOL_ID)
-    jwks = requests.get(jwks_url).json()
-    pprint(jwt.decode(token, jwks))
+    return jwt.decode(token)
 
 
 def lambda_handler(event, context):
