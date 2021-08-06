@@ -1,5 +1,5 @@
 import json
-from returns import generate_response
+from endpoints.helpers.returns import generate_response
 
 
 def get_body(event):

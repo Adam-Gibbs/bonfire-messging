@@ -39,6 +39,7 @@ package:
     - '**/*'
   include:
     - 'endpoints/*/*.py'
+    - 'endpoints/*.py'
 
 # Need to be more specific here with actions and resources
 provider:
@@ -113,25 +114,6 @@ functions:
             type: COGNITO_USER_POOLS
             authorizerId:
               Ref: ApiGatewayAuthorizer
-  testGetUser:
-    handler: endpoints/general/general.get_user
-    events:
-      - http:
-          path: /users/test/{user_id}
-          method: get
-
-  testCreateUser:
-    handler: endpoints/general/general.create_user
-    events:
-      - http:
-          path: /users/test
-          method: post
-  testHello:
-    handler: endpoints/general/hello.handler
-    events:
-      - http:
-          path: /test
-          method: get
 
 resources:
   Resources:
