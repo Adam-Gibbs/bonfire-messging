@@ -10,17 +10,19 @@ def lambda_handler(event, context):
     params = get_body(event)
     client = boto3.client('cognito-idp')
 
-    required_fields(["username", "code"])
+    required_fields(["username"])
     try:
         username = params['username']
-        code = params['code']
-
-        client.confirm_sign_up(
+        client.forgot_password(
             ClientId=endpoints.helpers.config.CLIENT_ID,
             Username=username,
-            ConfirmationCode=code,
-            ForceAliasCreation=False,
         )
+
+    except client.exceptions.InvalidParameterException:
+        return generate_response(400, {
+            "success": False,
+            "message": f"User {username} is not confirmed yet"
+        })
 
     except client.exceptions.NotAuthorizedException:
         return generate_response(400, {
@@ -33,5 +35,5 @@ def lambda_handler(event, context):
 
     return generate_response(200, {
         "success": True,
-        "message": "Your account is now verified"
-    })
+        "message": f"Please check your email for a validation code",
+        })

@@ -72,14 +72,35 @@ functions:
     handler: endpoints/auth/signup.lambda_handler
     events:
       - http:
-          path: /signup
+          path: /auth/signup
           method: post
 
   confirm_signup:
     handler: endpoints/auth/confirmSignup.lambda_handler
     events:
       - http:
-          path: /confirm
+          path: /auth/signup/confirm
+          method: post
+
+  resend_code:
+    handler: endpoints/auth/resendCode.lambda_handler
+    events:
+      - http:
+          path: /auth/resendCode
+          method: post
+
+  forgot_password:
+    handler: endpoints/auth/forgotPassword.lambda_handler
+    events:
+      - http:
+          path: /auth/forgotPassword
+          method: post
+
+  confirm_forgot_password:
+    handler: endpoints/auth/confirmForgotPassword.lambda_handler
+    events:
+      - http:
+          path: /auth/forgotPassword/confirm
           method: post
 
   test_auth:
@@ -111,220 +132,6 @@ functions:
       - http:
           path: /test
           method: get
-
-  sendGroupMessage:
-    name: ${self:custom.functionPrefix}-sendGroupMessage
-    handler: src/functions/sendGroupMessage.handler
-    events:
-      - http:
-          path: group-chat
-          method: post
-          cors: true
-          integration: lambda
-          request:
-            passThrough: NEVER
-            template:
-              application/json: |
-                #set($inputRoot = $input.path('$'))
-                {
-                  "userId": "$context.authorizer.claims.sub",
-                  "message": "$inputRoot.message"
-                }
-  updateUserActivity:
-    name: ${self:custom.functionPrefix}-updateUserActivity
-    handler: src/functions/updateUserActivity.handler
-    events:
-      - http:
-          path: user/last-activity
-          method: put
-          cors: true
-          integration: lambda
-          request:
-            passThrough: NEVER
-            template:
-              application/json: |
-                {
-                  "userId": "$context.authorizer.claims.sub"
-                }
-  acceptInvite:
-    name: ${self:custom.functionPrefix}-acceptInvite
-    handler: src/functions/acceptInvite.handler
-    events:
-      - http:
-          path: invites/accept
-          method: post
-          cors: true
-          integration: lambda
-          request:
-            passThrough: NEVER
-            template:
-              application/json: |
-                #set($inputRoot = $input.path('$'))
-                {
-                  "senderId": "$context.authorizer.claims.sub",
-                  "receiverId": "$inputRoot.userId"
-                }
-  createUser:
-    name: ${self:custom.functionPrefix}-createUser
-    handler: src/functions/createUser.handler
-    events:
-      - cognitoUserPool:
-          pool: MyUserPool
-          trigger: PostConfirmation
-  getChats:
-    name: ${self:custom.functionPrefix}-getChats
-    handler: src/functions/getChats.handler
-    events:
-      - http:
-          path: user/chats
-          method: get
-          cors: true
-          integration: lambda
-          request:
-            passThrough: NEVER
-            template:
-              application/json: |
-                {
-                  "userId": "$context.authorizer.claims.sub"
-                }
-  getInvites:
-    name: ${self:custom.functionPrefix}-getInvites
-    handler: src/functions/getInvites.handler
-    events:
-      - http:
-          path: user/invites
-          method: get
-          cors: true
-          integration: lambda
-          request:
-            passThrough: NEVER
-            template:
-              application/json: |
-                {
-                  "userId": "$context.authorizer.claims.sub"
-                }
-  deleteChat:
-    name: ${self:custom.functionPrefix}-deleteChat
-    handler: src/functions/deleteChat.handler
-    events:
-      - http:
-          path: user/chats/{userId}
-          method: delete
-          cors: true
-          integration: lambda
-          request:
-            passThrough: NEVER
-            template:
-              application/json: |
-                {
-                  "userId": "$context.authorizer.claims.sub",
-                  "otherUserId": "$input.params('userId')"
-                }
-  getMessages:
-    name: ${self:custom.functionPrefix}-getMessages
-    handler: src/functions/getMessages.handler
-    events:
-      - http:
-          path: user/chats/{userId}/messages
-          method: get
-          cors: true
-          integration: lambda
-          request:
-            passThrough: NEVER
-            template:
-              application/json: |
-                {
-                  "userId": "$context.authorizer.claims.sub",
-                  "otherUserId": "$input.params('userId')"
-                }
-  getOnlineUsers:
-    name: ${self:custom.functionPrefix}-getOnlineUsers
-    handler: src/functions/getOnlineUsers.handler
-    events:
-      - http:
-          path: users/online
-          method: get
-          cors: true
-          integration: lambda
-          request:
-            passThrough: NEVER
-            template:
-              application/json: |
-                {
-                  "timeLimit": 60,
-                  "userId": "$context.authorizer.claims.sub"
-                }
-  getUser:
-    name: ${self:custom.functionPrefix}-getUser
-    handler: src/functions/getUser.handler
-    events:
-      - http:
-          path: user
-          method: get
-          cors: true
-          integration: lambda
-          request:
-            passThrough: NEVER
-            template:
-              application/json: |
-                {
-                  "userId": "$context.authorizer.claims.sub"
-                }
-  deleteUser:
-    name: ${self:custom.functionPrefix}-deleteUser
-    handler: src/functions/deleteUser.handler
-    events:
-      - http:
-          path: user
-          method: delete
-          cors: true
-          integration: lambda
-          request:
-            passThrough: NEVER
-            template:
-              application/json: |
-                #set($inputRoot = $input.path('$'))
-                {
-                  "userId": "$context.authorizer.claims.sub"
-                }
-  sendInvite:
-    name: ${self:custom.functionPrefix}-sendInvite
-    handler: src/functions/sendInvite.handler
-    events:
-      - http:
-          path: invites/send
-          method: post
-          cors: true
-          integration: lambda
-          request:
-            passThrough: NEVER
-            template:
-              application/json: |
-                #set($inputRoot = $input.path('$'))
-                {
-                  "senderId": "$context.authorizer.claims.sub",
-                  "username": "$inputRoot.username",
-                  "userId": "$inputRoot.userId"
-                }
-  sendMessage:
-    name: ${self:custom.functionPrefix}-sendMessage
-    handler: src/functions/sendMessage.handler
-    events:
-      - http:
-          path: user/chats/{userId}/messages
-          method: post
-          cors: true
-          integration: lambda
-          request:
-            passThrough: NEVER
-            template:
-              application/json: |
-                #set($inputRoot = $input.path('$'))
-                {
-                  "messageBody": "$inputRoot.messageBody",
-                  "senderId": "$context.authorizer.claims.sub",
-                  "receiverId": "$input.params('userId')"
-                }
 
 resources:
   Resources:
@@ -453,78 +260,6 @@ resources:
               Ref: CognitoUserPoolMyUserPool
 
     # API Auth requirements
-    ApiGatewayMethodGroupDashchatPost:
-      Type: "AWS::ApiGateway::Method"
-      Properties:
-        AuthorizationType: COGNITO_USER_POOLS
-        AuthorizerId:
-          Ref: ApiGatewayAuthorizer
-    ApiGatewayMethodUserDelete:
-      Type: "AWS::ApiGateway::Method"
-      Properties:
-        AuthorizationType: COGNITO_USER_POOLS
-        AuthorizerId:
-          Ref: ApiGatewayAuthorizer
-    ApiGatewayMethodUserChatsUseridVarDelete:
-      Type: "AWS::ApiGateway::Method"
-      Properties:
-        AuthorizationType: COGNITO_USER_POOLS
-        AuthorizerId:
-          Ref: ApiGatewayAuthorizer
-    ApiGatewayMethodUserLastDashactivityPut:
-      Type: "AWS::ApiGateway::Method"
-      Properties:
-        AuthorizationType: COGNITO_USER_POOLS
-        AuthorizerId:
-          Ref: ApiGatewayAuthorizer
-    ApiGatewayMethodUserGet:
-      Type: "AWS::ApiGateway::Method"
-      Properties:
-        AuthorizationType: COGNITO_USER_POOLS
-        AuthorizerId:
-          Ref: ApiGatewayAuthorizer
-    ApiGatewayMethodUserInvitesGet:
-      Type: "AWS::ApiGateway::Method"
-      Properties:
-        AuthorizationType: COGNITO_USER_POOLS
-        AuthorizerId:
-          Ref: ApiGatewayAuthorizer
-    ApiGatewayMethodUsersOnlineGet:
-      Type: "AWS::ApiGateway::Method"
-      Properties:
-        AuthorizationType: COGNITO_USER_POOLS
-        AuthorizerId:
-          Ref: ApiGatewayAuthorizer
-    ApiGatewayMethodInvitesSendPost:
-      Type: "AWS::ApiGateway::Method"
-      Properties:
-        AuthorizationType: COGNITO_USER_POOLS
-        AuthorizerId:
-          Ref: ApiGatewayAuthorizer
-    ApiGatewayMethodInvitesAcceptPost:
-      Type: "AWS::ApiGateway::Method"
-      Properties:
-        AuthorizationType: COGNITO_USER_POOLS
-        AuthorizerId:
-          Ref: ApiGatewayAuthorizer
-    ApiGatewayMethodUserChatsGet:
-      Type: "AWS::ApiGateway::Method"
-      Properties:
-        AuthorizationType: COGNITO_USER_POOLS
-        AuthorizerId:
-          Ref: ApiGatewayAuthorizer
-    ApiGatewayMethodUserChatsUseridVarMessagesPost:
-      Type: "AWS::ApiGateway::Method"
-      Properties:
-        AuthorizationType: COGNITO_USER_POOLS
-        AuthorizerId:
-          Ref: ApiGatewayAuthorizer
-    ApiGatewayMethodUserChatsUseridVarMessagesGet:
-      Type: "AWS::ApiGateway::Method"
-      Properties:
-        AuthorizationType: COGNITO_USER_POOLS
-        AuthorizerId:
-          Ref: ApiGatewayAuthorizer
     ApiGatewayAuthorizer:
       Type: "AWS::ApiGateway::Authorizer"
       Properties:

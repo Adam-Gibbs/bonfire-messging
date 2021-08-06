@@ -3,6 +3,7 @@ import json
 import boto3
 
 from endpoints.helpers.returns import generate_response
+from endpoints.helpers.getData import get_body, get_path
 
 USERS_TABLE = os.environ['USERS_TABLE']
 IS_OFFLINE = os.environ.get('IS_OFFLINE')
@@ -17,10 +18,11 @@ else:
     client = boto3.client('dynamodb')
 
 def get_user(event, context):
+    params = get_path(event)
     resp = client.get_item(
         TableName=USERS_TABLE,
         Key={
-            'userId': { 'S': event.get("pathParameters").get("user_id") }
+            'userId': { 'S': params.get("user_id") }
         }
     )
     item = resp.get('Item')
@@ -29,15 +31,15 @@ def get_user(event, context):
             'error': 'User does not exist'
         })
 
-    return generate_response(200, 
+    return generate_response(200,
         {
-            'userId': item.get('userId').get('S'), 
+            'userId': item.get('userId').get('S'),
             'name': item.get('name').get('S')
         }
     )
 
 def create_user(event, context):
-    json_body = json.loads(event.get("body"))
+    json_body = get_body(event)
     user_id = json_body.get('userId')
     name = json_body.get('name')
     if not user_id or not name:
@@ -55,7 +57,7 @@ def create_user(event, context):
 
     return generate_response(200,
         {
-            'userId': user_id, 
+            'userId': user_id,
             'name': name
         }
     )
