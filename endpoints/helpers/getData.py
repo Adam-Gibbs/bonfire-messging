@@ -10,12 +10,8 @@ def get_path(event):
     return event.get("pathParameters")
 
 
-def get_header(event):
-    return event.get("header")
-    
-
-def get_user(event):
-    return event.get("pathParameters")
+def get_header_auth(event):
+    return event.get("Authorization")
 
 
 def required_fields(fields, event):
