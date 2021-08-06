@@ -10,6 +10,14 @@ def get_path(event):
     return event.get("pathParameters")
 
 
+def get_header(event):
+    return event.get("header")
+    
+
+def get_user(event):
+    return event.get("pathParameters")
+
+
 def required_fields(fields, event):
     body = get_body(event)
     for field in fields:

@@ -2,15 +2,15 @@ import boto3
 
 from endpoints.helpers.returns import generate_response
 from endpoints.helpers.getData import get_body, required_fields
-import endpoints.helpers.config
+import endpoints.helpers.config as config
 import authExceptions
 
 
 def initiate_auth(client, username, password):
     try:
         resp = client.admin_initiate_auth(
-            UserPoolId=endpoints.helpers.config.USER_POOL_ID,
-            ClientId=endpoints.helpers.config.CLIENT_ID,
+            UserPoolId=config.USER_POOL_ID,
+            ClientId=config.CLIENT_ID,
             AuthFlow='ADMIN_NO_SRP_AUTH',
             AuthParameters={
                 'USERNAME': username,

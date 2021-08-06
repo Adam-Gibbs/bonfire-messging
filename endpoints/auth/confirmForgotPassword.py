@@ -2,7 +2,7 @@ import boto3
 
 from endpoints.helpers.returns import generate_response
 from endpoints.helpers.getData import get_body, required_fields
-import endpoints.helpers.config
+import endpoints.helpers.config as config
 import authExceptions
 
 
@@ -23,7 +23,7 @@ def lambda_handler(event, context):
 
     try:
         client.confirm_forgot_password(
-                ClientId=endpoints.helpers.config.CLIENT_ID,
+                ClientId=config.CLIENT_ID,
                 Username=username,
                 ConfirmationCode=code,
                 Password=password,

@@ -2,7 +2,7 @@ import boto3
 
 from endpoints.helpers.returns import generate_response
 from endpoints.helpers.getData import get_body, required_fields
-import endpoints.helpers.config
+import endpoints.helpers.config as config
 import authExceptions
 
 
@@ -23,7 +23,7 @@ def lambda_handler(event, context):
                     'USERNAME': username,
                     'REFRESH_TOKEN': refresh_token
             },
-            ClientId=endpoints.helpers.config.CLIENT_ID,
+            ClientId=config.CLIENT_ID,
             AuthFlow='REFRESH_TOKEN_AUTH',
         )
         res = resp.get("AuthenticationResult")

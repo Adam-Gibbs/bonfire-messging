@@ -111,6 +111,12 @@ functions:
       - http:
           path: /auth/forgotPassword/confirm
           method: post
+  decode:
+    handler: endpoints/decode.lambda_handler
+    events:
+      - http:
+          path: /decode
+          method: post
   test_auth:
     handler: endpoints/auth/testAuth.endpoint_test_auth
     events:
