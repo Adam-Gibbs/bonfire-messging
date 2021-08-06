@@ -7,7 +7,7 @@ import endpoints.helpers.config
 def lambda_handler(event, context):
     params = get_body(event)
 
-    required_fields(["username", "email", "password"])
+    required_fields(["username", "email", "password"], event)
     username = params['username']
     email = params["email"]
     password = params['password']

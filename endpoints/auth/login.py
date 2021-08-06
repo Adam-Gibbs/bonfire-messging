@@ -32,7 +32,7 @@ def lambda_handler(event, context):
     params = get_body(event)
     client = boto3.client('cognito-idp')
 
-    required_fields(["username", "password"])
+    required_fields(["username", "password"], event)
     username = params['username']
     password = params['password']
 

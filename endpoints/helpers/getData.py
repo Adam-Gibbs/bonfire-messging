@@ -12,7 +12,7 @@ def get_path(event):
 
 def required_fields(fields, event):
     body = get_body(event)
-    for field in ["username", "password"]:
+    for field in fields:
         if body.get(field) is None:
             generate_response(400, {
                 "success": False,
