@@ -14,10 +14,10 @@ def lambda_handler(event, context):
     if invalid_fields is not None:
         return invalid_fields
 
-    try:
-        username = params['username']
-        code = params['code']
+    username = params['username']
+    code = params['code']
 
+    try:
         client.confirm_sign_up(
             ClientId=endpoints.helpers.config.CLIENT_ID,
             Username=username,

@@ -75,42 +75,42 @@ functions:
       - http:
           path: /auth/login
           method: post
-
+  refresh_auth:
+    handler: endpoints/auth/refreshAuth.lambda_handler
+    events:
+      - http:
+          path: /auth/refresh
+          method: post
   signup:
     handler: endpoints/auth/signup.lambda_handler
     events:
       - http:
           path: /auth/signup
           method: post
-
   confirm_signup:
     handler: endpoints/auth/confirmSignup.lambda_handler
     events:
       - http:
           path: /auth/signup/confirm
           method: post
-
   resend_code:
     handler: endpoints/auth/resendCode.lambda_handler
     events:
       - http:
           path: /auth/resendCode
           method: post
-
   forgot_password:
     handler: endpoints/auth/forgotPassword.lambda_handler
     events:
       - http:
           path: /auth/forgotPassword
           method: post
-
   confirm_forgot_password:
     handler: endpoints/auth/confirmForgotPassword.lambda_handler
     events:
       - http:
           path: /auth/forgotPassword/confirm
           method: post
-
   test_auth:
     handler: endpoints/auth/testAuth.endpoint_test_auth
     events:

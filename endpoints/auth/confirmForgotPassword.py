@@ -17,11 +17,11 @@ def lambda_handler(event, context):
     if invalid_fields is not None:
         return invalid_fields
 
-    try:
-        username = params['username']
-        password = params['new-password']
-        code = params['code']
+    username = params['username']
+    password = params['new-password']
+    code = params['code']
 
+    try:
         client.confirm_forgot_password(
                 ClientId=endpoints.helpers.config.CLIENT_ID,
                 Username=username,

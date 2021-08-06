@@ -17,6 +17,7 @@ def lambda_handler(event, context):
     password = params['password']
 
     client = boto3.client('cognito-idp')
+
     try:
         client.sign_up(
             ClientId=endpoints.helpers.config.CLIENT_ID,
