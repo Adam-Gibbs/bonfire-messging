@@ -23,7 +23,7 @@ def initiate_auth(client, username, password):
         )
 
     except Exception as e:
-        return None, handle_auth_exception(e)
+        return None, authExceptions.handle_auth_exception(e)
 
     return resp, None
 

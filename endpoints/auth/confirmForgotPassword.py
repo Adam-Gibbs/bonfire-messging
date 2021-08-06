@@ -10,13 +10,16 @@ def lambda_handler(event, context):
     params = get_body(event)
     client = boto3.client('cognito-idp')
 
-    invalid_fields = required_fields(["username", "password", "code"], event)
+    invalid_fields = required_fields(
+        ["username", "new-password", "code"],
+        event
+    )
     if invalid_fields is not None:
         return invalid_fields
 
     try:
         username = params['username']
-        password = params['password']
+        password = params['new-password']
         code = params['code']
 
         client.confirm_forgot_password(
