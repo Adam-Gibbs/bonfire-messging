@@ -10,7 +10,10 @@ def lambda_handler(event, context):
     params = get_body(event)
     client = boto3.client('cognito-idp')
 
-    required_fields(["username"], event)
+    invalid_fields = required_fields(["username"], event)
+    if invalid_fields is not None:
+        return invalid_fields
+
     try:
         username = params['username']
         client.resend_confirmation_code(
@@ -19,13 +22,14 @@ def lambda_handler(event, context):
         )
 
     except client.exceptions.InvalidParameterException:
+        print("InvalidParameterException")
         return generate_response(400, {
                 "success": False,
                 "message": "User is already confirmed"
             })
 
     except Exception as e:
-        return authExceptions.handle_exception(e)
+        return authExceptions.handle_auth_exception(e)
 
     return generate_response(200, {
         "success": True

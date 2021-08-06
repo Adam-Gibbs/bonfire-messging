@@ -23,7 +23,7 @@ def initiate_auth(client, username, password):
         )
 
     except Exception as e:
-        return None, authExceptions.handle_exception(e)
+        return None, handle_auth_exception(e)
 
     return resp, None
 
@@ -32,7 +32,10 @@ def lambda_handler(event, context):
     params = get_body(event)
     client = boto3.client('cognito-idp')
 
-    required_fields(["username", "password"], event)
+    invalid_fields = required_fields(["username", "password"], event)
+    if invalid_fields is not None:
+        return invalid_fields
+
     username = params['username']
     password = params['password']
 

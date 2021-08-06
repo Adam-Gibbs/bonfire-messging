@@ -14,7 +14,9 @@ def required_fields(fields, event):
     body = get_body(event)
     for field in fields:
         if body.get(field) is None:
-            generate_response(400, {
+            return generate_response(400, {
                 "success": False,
                 "message": f"{field} is required",
             })
+
+    return None

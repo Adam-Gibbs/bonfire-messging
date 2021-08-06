@@ -2,12 +2,16 @@ import boto3
 from endpoints.helpers.returns import generate_response
 from endpoints.helpers.getData import get_body, required_fields
 import endpoints.helpers.config
+import authExceptions
 
 
 def lambda_handler(event, context):
     params = get_body(event)
 
-    required_fields(["username", "email", "password"], event)
+    invalid_fields = required_fields(["username", "email", "password"], event)
+    if invalid_fields is not None:
+        return invalid_fields
+
     username = params['username']
     email = params["email"]
     password = params['password']
@@ -37,28 +41,28 @@ def lambda_handler(event, context):
         )
 
     except client.exceptions.UsernameExistsException:
+        print("UsernameExistsException")
         return generate_response(400, {
             "success": False,
             "message": "This username already exists"
         })
 
     except client.exceptions.InvalidPasswordException:
+        print("InvalidPasswordException")
         return generate_response(400, {
             "success": False,
-            "message": "Password should have Caps, Special chars, Numbers"
+            "message": "Password should have Caps, Lower cas and Numbers"
         })
 
     except client.exceptions.UserLambdaValidationException:
+        print("UserLambdaValidationException")
         return generate_response(400, {
             "success": False,
             "message": "Email already exists"
         })
 
     except Exception as e:
-        return generate_response(400, {
-            "success": False,
-            "message": str(e)
-        })
+        return authExceptions.handle_auth_exception(e)
 
     return generate_response(200, {
         "success": True,

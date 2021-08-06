@@ -69,18 +69,18 @@ provider:
     RECIPIENTS_TABLE: ${self:custom.recipientsTable}
 
 functions:
-  confirm_signup:
-    handler: endpoints/auth/confirmSignup.lambda_handler
-    events:
-      - http:
-          path: /auth/confirm/signup
-          method: post
-
   signup:
     handler: endpoints/auth/signup.lambda_handler
     events:
       - http:
           path: /auth/signup
+          method: post
+
+  confirm_signup:
+    handler: endpoints/auth/confirmSignup.lambda_handler
+    events:
+      - http:
+          path: /auth/signup/confirm
           method: post
 
   resend_code:
@@ -90,18 +90,18 @@ functions:
           path: /auth/resendCode
           method: post
 
-  confirm_forgot_password:
-    handler: endpoints/auth/confirmForgotPassword.lambda_handler
-    events:
-      - http:
-          path: /auth/confirm/forgotPassword
-          method: post
-
   forgot_password:
     handler: endpoints/auth/forgotPassword.lambda_handler
     events:
       - http:
           path: /auth/forgotPassword
+          method: post
+
+  confirm_forgot_password:
+    handler: endpoints/auth/confirmForgotPassword.lambda_handler
+    events:
+      - http:
+          path: /auth/forgotPassword/confirm
           method: post
 
   test_auth:
