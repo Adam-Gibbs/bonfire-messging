@@ -12,9 +12,8 @@ def decode_token(token):
     _, payload, _ = token.split(".")
     payload_json_str = urlsafe_b64decode(maybe_pad(payload))
     payload_json = json.loads(payload_json_str)
-    print(payload_json)
     return {
-        "username": payload_json["username"],
+        "username": payload_json["cognito:username"],
         "email": payload_json["email"]
     }
 
