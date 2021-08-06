@@ -15,10 +15,6 @@ def initiate_auth(client, username, password):
             AuthParameters={
                 'USERNAME': username,
                 'PASSWORD': password,
-            },
-            ClientMetadata={
-                'username': username,
-                'password': password,
             }
         )
 
