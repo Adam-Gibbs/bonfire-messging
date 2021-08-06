@@ -116,7 +116,11 @@ functions:
     events:
       - http:
           path: /decode
-          method: post
+          method: get
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
   test_auth:
     handler: endpoints/auth/testAuth.endpoint_test_auth
     events:
