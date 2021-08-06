@@ -69,7 +69,7 @@ provider:
     RECIPIENTS_TABLE: ${self:custom.recipientsTable}
 
 functions:
-  confirm_forgot_password:
+  login:
     handler: endpoints/auth/login.lambda_handler
     events:
       - http:
