@@ -15,7 +15,7 @@ def lambda_handler(event, context):
         return invalid_fields
 
     username = params['username']
-    refresh_token = event["refresh_token"]
+    refresh_token = params["refresh_token"]
 
     try:
         resp = client.initiate_auth(
