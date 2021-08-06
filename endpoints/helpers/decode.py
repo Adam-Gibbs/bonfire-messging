@@ -1,5 +1,3 @@
-from endpoints.helpers.getData import get_header_auth
-from endpoints.helpers.returns import generate_response
 import json
 from base64 import urlsafe_b64decode
 
@@ -16,9 +14,3 @@ def decode_token(token):
         "username": payload_json["cognito:username"],
         "email": payload_json["email"]
     }
-
-
-def lambda_handler(event, context):
-    return generate_response(200, {
-        "data": decode_token(get_header_auth(event))
-    })
