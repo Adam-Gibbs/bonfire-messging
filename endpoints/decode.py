@@ -11,7 +11,7 @@ def maybe_pad(s):
 def decode_token(token):
     _, payload, _ = token.split(".")
     payload_json_str = urlsafe_b64decode(maybe_pad(payload))
-    payload_json = json.loads(payload_json_str, 'utf-8')
+    payload_json = json.loads(payload_json_str)
     return {
         "username": payload_json["username"],
         "email": payload_json["email"]
