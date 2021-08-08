@@ -1,14 +1,14 @@
 import boto3
 
 from endpoints.helpers.returns import generate_response
-from endpoints.helpers.getData import get_body, required_fields
+from endpoints.helpers.getRequestData import get_body, required_fields
 import endpoints.helpers.config as config
 import authExceptions
 
 
 def lambda_handler(event, context):
     params = get_body(event)
-    client = boto3.client('cognito-idp')
+    client_cognito = boto3.client('cognito-idp')
 
     invalid_fields = required_fields(["username", "refresh_token"], event)
     if invalid_fields is not None:
@@ -18,7 +18,7 @@ def lambda_handler(event, context):
     refresh_token = params["refresh_token"]
 
     try:
-        resp = client.initiate_auth(
+        resp = client_cognito.initiate_auth(
             AuthParameters={
                     'USERNAME': username,
                     'REFRESH_TOKEN': refresh_token
@@ -28,7 +28,7 @@ def lambda_handler(event, context):
         )
         res = resp.get("AuthenticationResult")
 
-    except client.exceptions.NotAuthorizedException:
+    except client_cognito.exceptions.NotAuthorizedException:
         return generate_response(400, {
             "success": False,
             "message": "Invalid refresh token"

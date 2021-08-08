@@ -1,14 +1,14 @@
 import boto3
 
 from endpoints.helpers.returns import generate_response
-from endpoints.helpers.getData import get_body, required_fields
+from endpoints.helpers.getRequestData import get_body, required_fields
 import endpoints.helpers.config as config
 import authExceptions
 
 
 def lambda_handler(event, context):
     params = get_body(event)
-    client = boto3.client('cognito-idp')
+    client_cognito = boto3.client('cognito-idp')
 
     invalid_fields = required_fields(["username"], event)
     if invalid_fields is not None:
@@ -17,19 +17,19 @@ def lambda_handler(event, context):
     username = params['username']
 
     try:
-        client.forgot_password(
+        client_cognito.forgot_password(
             ClientId=config.CLIENT_ID,
             Username=username,
         )
 
-    except client.exceptions.InvalidParameterException:
+    except client_cognito.exceptions.InvalidParameterException:
         print("InvalidParameterException")
         return generate_response(400, {
             "success": False,
             "message": f"User {username} is not confirmed yet"
         })
 
-    except client.exceptions.NotAuthorizedException:
+    except client_cognito.exceptions.NotAuthorizedException:
         print("NotAuthorizedException")
         return generate_response(400, {
             "success": False,

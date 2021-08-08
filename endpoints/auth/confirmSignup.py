@@ -1,14 +1,16 @@
 import boto3
+import os
 
 from endpoints.helpers.returns import generate_response
-from endpoints.helpers.getData import get_body, required_fields
+from endpoints.helpers.getRequestData import get_body, required_fields
 import endpoints.helpers.config as config
 import authExceptions
 
 
 def lambda_handler(event, context):
     params = get_body(event)
-    client = boto3.client('cognito-idp')
+    client_cognito = boto3.client('cognito-idp')
+    client_db = boto3.client('dynamodb')
 
     invalid_fields = required_fields(["username", "code"], event)
     if invalid_fields is not None:
@@ -18,14 +20,21 @@ def lambda_handler(event, context):
     code = params['code']
 
     try:
-        client.confirm_sign_up(
+        client_cognito.confirm_sign_up(
             ClientId=config.CLIENT_ID,
             Username=username,
             ConfirmationCode=code,
             ForceAliasCreation=False,
         )
 
-    except client.exceptions.NotAuthorizedException:
+        client_db.put_item(
+            TableName=os.environ['USERS_TABLE'],
+            Item={
+                'username': {'S': username}
+            }
+        )
+
+    except client_cognito.exceptions.NotAuthorizedException:
         print("NotAuthorizedException")
         return generate_response(400, {
             "success": False,

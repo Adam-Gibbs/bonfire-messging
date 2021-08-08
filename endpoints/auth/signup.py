@@ -1,6 +1,6 @@
 import boto3
 from endpoints.helpers.returns import generate_response
-from endpoints.helpers.getData import get_body, required_fields
+from endpoints.helpers.getRequestData import get_body, required_fields
 import endpoints.helpers.config as config
 import authExceptions
 
@@ -16,10 +16,10 @@ def lambda_handler(event, context):
     email = params["email"]
     password = params['password']
 
-    client = boto3.client('cognito-idp')
+    client_cognito = boto3.client('cognito-idp')
 
     try:
-        client.sign_up(
+        client_cognito.sign_up(
             ClientId=config.CLIENT_ID,
             Username=username,
             Password=password,
@@ -41,21 +41,21 @@ def lambda_handler(event, context):
             ]
         )
 
-    except client.exceptions.UsernameExistsException:
+    except client_cognito.exceptions.UsernameExistsException:
         print("UsernameExistsException")
         return generate_response(400, {
             "success": False,
             "message": "This username already exists"
         })
 
-    except client.exceptions.InvalidPasswordException:
+    except client_cognito.exceptions.InvalidPasswordException:
         print("InvalidPasswordException")
         return generate_response(400, {
             "success": False,
             "message": "Password should have Caps, Lower cas and Numbers"
         })
 
-    except client.exceptions.UserLambdaValidationException:
+    except client_cognito.exceptions.UserLambdaValidationException:
         print("UserLambdaValidationException")
         return generate_response(400, {
             "success": False,

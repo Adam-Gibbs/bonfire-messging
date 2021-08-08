@@ -1,7 +1,7 @@
 import boto3
 
 from endpoints.helpers.returns import generate_response
-from endpoints.helpers.getData import get_body, required_fields
+from endpoints.helpers.getRequestData import get_body, required_fields
 import endpoints.helpers.config as config
 import authExceptions
 
@@ -26,7 +26,7 @@ def initiate_auth(client, username, password):
 
 def lambda_handler(event, context):
     params = get_body(event)
-    client = boto3.client('cognito-idp')
+    client_cognito = boto3.client('cognito-idp')
 
     invalid_fields = required_fields(["username", "password"], event)
     if invalid_fields is not None:
@@ -35,7 +35,7 @@ def lambda_handler(event, context):
     username = params['username']
     password = params['password']
 
-    resp, err = initiate_auth(client, username, password)
+    resp, err = initiate_auth(client_cognito, username, password)
     if err is not None:
         return err
 
