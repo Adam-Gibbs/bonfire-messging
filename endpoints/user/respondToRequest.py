@@ -21,16 +21,12 @@ def lambda_handler(event, context):
 
     try:
         if accepted is True:
-            resp = client_db.get_item(
+            other_user = client_db.get_item(
                 TableName=os.environ['FRIEND_REQUESTS_TABLE'],
                 Key={
                     'friendRequestId': {'S': friend_request_id}
                 }
-            )
-
-            print(resp)
-            other_user = resp.get('Items').get("requestFrom")
-            print(other_user)
+            ).get('Item').get("requestFrom").get("S")
 
             client_db.put_item(
                 TableName=os.environ['FRIENDS_TABLE'],
