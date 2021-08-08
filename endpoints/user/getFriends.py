@@ -10,12 +10,12 @@ from endpoints.user_methods.getUsername import get_username
 def lambda_handler(event, context):
     current_user = get_username(event)
     client_db = boto3.client('dynamodb',  region_name=config.USER_POOL_LOC)
+    query = 'friendTo = :currentUser OR friendOf = :currentUser'
 
     try:
         resp = client_db.query(
             TableName=os.environ['FRIENDS_TABLE'],
-            KeyConditionExpression='friendTo = :currentUser ' +
-                                   'OR friendOf = :currentUser',
+            KeyConditionExpression=query,
             ExpressionAttributeValues={
                 ':currentUser': {'S': current_user}
             }
