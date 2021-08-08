@@ -184,7 +184,7 @@ functions:
               Ref: ApiGatewayAuthorizer
 
   checkMessages:
-    handler: endpoints/message/checkMessage.lambda_handler
+    handler: endpoints/message/checkMessages.lambda_handler
     events:
       - http:
           path: /message

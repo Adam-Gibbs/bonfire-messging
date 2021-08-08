@@ -41,7 +41,7 @@ def lambda_handler(event, context):
             Item={
                 'messageId': {'N': unique_key(current_user)},
                 'recipient': {'S': recipient},
-                'replyId': {'S': reply_id},
+                'replyId': {'N': reply_id},
                 'message': {'S': message}
             }
         )
