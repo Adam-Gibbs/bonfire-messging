@@ -14,7 +14,7 @@ custom:
   messagesTable: '${self:custom.functionPrefix}.messages'
   chatMembersTable: '${self:custom.functionPrefix}.chatMembers'
   mediaTable: '${self:custom.functionPrefix}.media'
-  friendRequestsTable: '${self:custom.functionPrefix}.newFriendRequests'
+  friendRequestsTable: '${self:custom.functionPrefix}.friendRequests'
   friendsTable: '${self:custom.functionPrefix}.friends'
   pingsTable: '${self:custom.functionPrefix}.pings'
   recipientsTable: '${self:custom.functionPrefix}.recipients'
@@ -283,22 +283,10 @@ resources:
       Type: 'AWS::DynamoDB::Table'
       Properties:
         AttributeDefinitions:
-          - AttributeName: userId
-            AttributeType: S
           - AttributeName: username
             AttributeType: S
-        GlobalSecondaryIndexes:
-          - IndexName: username-index
-            KeySchema:
-              - AttributeName: username
-                KeyType: HASH
-            Projection:
-              ProjectionType: ALL
-            ProvisionedThroughput:
-              ReadCapacityUnits: 5
-              WriteCapacityUnits: 5
         KeySchema:
-          - AttributeName: userId
+          - AttributeName: username
             KeyType: HASH
         ProvisionedThroughput:
           ReadCapacityUnits: 5
@@ -365,8 +353,20 @@ resources:
       Type: "AWS::DynamoDB::Table"
       Properties:
         AttributeDefinitions:
+          - AttributeName: friendRequestId
+            AttributeType: S
           - AttributeName: to
             AttributeType: S
+        GlobalSecondaryIndexes:
+          - IndexName: to-index
+            KeySchema:
+              - AttributeName: to
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+            ProvisionedThroughput:
+              ReadCapacityUnits: 5
+              WriteCapacityUnits: 5
         KeySchema:
           - AttributeName: to
             KeyType: HASH
