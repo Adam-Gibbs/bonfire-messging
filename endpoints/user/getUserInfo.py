@@ -15,4 +15,4 @@ def lambda_handler(event, context):
         })
 
     except Exception as e:
-        return None, handle_auth_exception(e)
+        return handle_auth_exception(e)

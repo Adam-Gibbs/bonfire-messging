@@ -14,6 +14,7 @@ custom:
   messagesTable: '${self:custom.functionPrefix}.messages'
   chatMembersTable: '${self:custom.functionPrefix}.chatMembers'
   mediaTable: '${self:custom.functionPrefix}.media'
+  friendRequestsTable: '${self:custom.functionPrefix}.friendRequests'
   friendsTable: '${self:custom.functionPrefix}.friends'
   pingsTable: '${self:custom.functionPrefix}.pings'
   recipientsTable: '${self:custom.functionPrefix}.recipients'
@@ -64,6 +65,7 @@ provider:
     MESSAGES_TABLE: ${self:custom.messagesTable}
     CHAT_MEMBERS_TABLE: ${self:custom.chatMembersTable}
     MEDIA_TABLE: ${self:custom.mediaTable}
+    FRIEND_REQUESTS_TABLE: ${self:custom.friendRequestsTable}
     FRIENDS_TABLE: ${self:custom.friendsTable}
     PINGS_TABLE: ${self:custom.pingsTable}
     RECIPIENTS_TABLE: ${self:custom.recipientsTable}
@@ -111,6 +113,7 @@ functions:
       - http:
           path: /auth/forgotPassword/confirm
           method: post
+
   getInfo:
     handler: endpoints/user/getUserInfo.lambda_handler
     events:
@@ -121,12 +124,24 @@ functions:
             type: COGNITO_USER_POOLS
             authorizerId:
               Ref: ApiGatewayAuthorizer
-  test_auth:
-    handler: endpoints/auth/testAuth.endpoint_test_auth
+
+  getFriendRequests:
+    handler: endpoints/user/getFriendRequests.lambda_handler
     events:
       - http:
-          path: /testauth
+          path: /user/friendRequests
           method: get
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+
+  sendFriendRequest:
+    handler: endpoints/user/sendFriendRequest.lambda_handler
+    events:
+      - http:
+          path: /user/friendRequests
+          method: post
           authorizer:
             type: COGNITO_USER_POOLS
             authorizerId:
@@ -341,6 +356,19 @@ resources:
           ReadCapacityUnits: 5
           WriteCapacityUnits: 5
         TableName: ${self:custom.mediaTable}
+    FriendRequestsTable:
+      Type: "AWS::DynamoDB::Table"
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: friendRequestId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: friendRequestId
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
+        TableName: ${self:custom.friendRequestsTable}
     FriendsTable:
       Type: "AWS::DynamoDB::Table"
       Properties:
