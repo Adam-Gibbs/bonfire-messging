@@ -25,8 +25,8 @@ def lambda_handler(event, context):
         print("\n")
         print(resp.get('Items'))
 
-        generate_response(200,  {
-            "resp": resp
+        return generate_response(200,  {
+            "resp": resp.get('Items')
         })
 
     except Exception as e:
