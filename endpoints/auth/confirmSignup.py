@@ -2,7 +2,7 @@ import boto3
 import os
 
 from endpoints.helpers.returns import generate_response
-from endpoints.helpers.getRequestData import get_body, required_fields
+from endpoints.helpers.getRequestData import get_body, check_fields
 import endpoints.helpers.config as config
 import authExceptions
 
@@ -12,7 +12,7 @@ def lambda_handler(event, context):
     client_cognito = boto3.client('cognito-idp')
     client_db = boto3.client('dynamodb')
 
-    invalid_fields = required_fields(["username", "code"], event)
+    invalid_fields = check_fields(["username", "code"], [str, str], event)
     if invalid_fields is not None:
         return invalid_fields
 

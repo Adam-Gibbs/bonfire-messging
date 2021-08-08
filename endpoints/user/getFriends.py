@@ -13,11 +13,11 @@ def lambda_handler(event, context):
 
     try:
         resp = client_db.query(
-            TableName=os.environ['FRIEND_REQUESTS_TABLE'],
-            IndexName='requestTo-index',
-            KeyConditionExpression='requestTo = :requestTo',
+            TableName=os.environ['FRIENDS_TABLE'],
+            KeyConditionExpression='friendTo = :currentUser' +
+                                   'OR friendOf = :currentUser',
             ExpressionAttributeValues={
-                ':requestTo': {'S': current_user}
+                ':currentUser': {'S': current_user}
             }
         )
 

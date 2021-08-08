@@ -1,4 +1,4 @@
-from endpoints.helpers.getRequestData import get_body, required_fields
+from endpoints.helpers.getRequestData import get_body, check_fields
 from endpoints.user_methods.getUsername import get_username
 from endpoints.helpers.returns import generate_response
 from endpoints.exceptions import handle_exception
@@ -11,7 +11,7 @@ def lambda_handler(event, context):
     current_user = get_username(event)
     client_db = boto3.client('dynamodb')
 
-    invalid_fields = required_fields(["username", "message"], event)
+    invalid_fields = check_fields(["username", "message"], [str, str], event)
     if invalid_fields is not None:
         return invalid_fields
 

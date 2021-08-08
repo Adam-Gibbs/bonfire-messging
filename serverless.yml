@@ -160,6 +160,17 @@ functions:
             authorizerId:
               Ref: ApiGatewayAuthorizer
 
+  getFriends:
+    handler: endpoints/user/getFriends.lambda_handler
+    events:
+      - http:
+          path: /user/friends
+          method: get
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+
 resources:
   Resources:
     # Auth Requirements        
