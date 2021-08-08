@@ -2,6 +2,14 @@ import os
 import boto3
 
 
+def get_all_friends(list, section):
+    total = []
+    for friend in list:
+        total.append(friend.get(section))
+
+    return total
+
+
 def check_friends(user):
     client_db = boto3.client('dynamodb')
 
@@ -24,14 +32,14 @@ def check_friends(user):
     )
 
     if 'Items' in resp1:
-        resp1_items = resp1.get("Items").get("friendOf")
+        resp1_items = get_all_friends(resp1, 'friendOf')
     else:
-        resp1_items = {}
+        resp1_items = []
 
     if 'Items' in resp2:
-        total = resp2.get("Items").get("friendTo")
+        total = get_all_friends(resp2, 'friendTo')
     else:
-        total = {}
+        total = []
 
     total.append(resp1_items)
 
