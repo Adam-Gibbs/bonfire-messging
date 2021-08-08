@@ -40,4 +40,11 @@ def check_fields(fields, types, event, optional_fields=[], optional_types=[]):
                     f"to be type {optional_types[index]}",
             })
 
+    for key in body.keys():
+        if key not in fields and key not in optional_fields:
+            return generate_response(400, {
+                "success": False,
+                "message": f"Too many fields, {key} is not required ",
+            })
+
     return None
