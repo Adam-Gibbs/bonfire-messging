@@ -12,7 +12,7 @@ custom:
   functionPrefix: 'ping-messaging-${self:provider.stage}'
   usersTable: '${self:custom.functionPrefix}.users.${self:custom.versionSuffix}'
   chatsTable: '${self:custom.functionPrefix}.chats'
-  messagesTable: '${self:custom.functionPrefix}.messages'
+  messagesTable: '${self:custom.functionPrefix}.messages-${self:provider.stage}'
   chatMembersTable: '${self:custom.functionPrefix}.chatMembers'
   mediaTable: '${self:custom.functionPrefix}.media'
   friendRequestsTable: '${self:custom.functionPrefix}.friendRequests.${self:custom.versionSuffix}'
