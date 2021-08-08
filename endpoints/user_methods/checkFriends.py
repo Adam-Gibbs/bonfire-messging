@@ -7,7 +7,7 @@ def check_friends(user):
 
     resp1 = client_db.query(
         TableName=os.environ['FRIENDS_TABLE'],
-        IndexName='friends-index',
+        IndexName='friendTo-index',
         KeyConditionExpression='friendTo = :currentUser',
         ExpressionAttributeValues={
             ':currentUser': {'S': user}
@@ -16,7 +16,7 @@ def check_friends(user):
 
     resp2 = client_db.query(
         TableName=os.environ['FRIENDS_TABLE'],
-        IndexName='friends-index',
+        IndexName='friendOf-index',
         KeyConditionExpression='friendOf = :currentUser',
         ExpressionAttributeValues={
             ':currentUser': {'S': user}
