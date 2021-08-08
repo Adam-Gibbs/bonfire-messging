@@ -13,6 +13,4 @@ def get_email(username):
         UserPoolId=config.USER_POOL_ID
     )
 
-    print(resp)
-
-    return resp["username"]
+    return resp["Users"]["Attributes"]["Value"]
