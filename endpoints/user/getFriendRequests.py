@@ -12,13 +12,15 @@ def lambda_handler(event, context):
     client_db = boto3.client('dynamodb')
 
     try:
-        resp = client_db.get_item(
+        resp = client_db.query(
             TableName=os.environ['FRIEND_REQUESTS_TABLE'],
             IndexName='to-index',
             KeyConditionExpression=Key('to').eq(current_user)
         )
 
         print(resp)
+        print("\n")
+        print(resp.get('Items'))
 
         generate_response(200,  {
             "resp": resp
