@@ -24,12 +24,12 @@ def check_friends(user):
     )
 
     if 'Items' in resp1:
-        resp1_items = resp1.get("Items")
+        resp1_items = resp1.get("Items").get("friendOf")
     else:
         resp1_items = {}
 
     if 'Items' in resp2:
-        total = resp2.get("Items")
+        total = resp2.get("Items").get("friendTo")
     else:
         total = {}
 
