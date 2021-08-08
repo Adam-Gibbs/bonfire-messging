@@ -171,6 +171,31 @@ functions:
             authorizerId:
               Ref: ApiGatewayAuthorizer
 
+
+  sendMessage:
+    handler: endpoints/message/sendMessage.lambda_handler
+    events:
+      - http:
+          path: /message
+          method: post
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+
+  checkMessages:
+    handler: endpoints/message/checkMessage.lambda_handler
+    events:
+      - http:
+          path: /message
+          method: get
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+
+
+
 resources:
   Resources:
     # Auth Requirements        
@@ -336,7 +361,19 @@ resources:
       Properties:
         AttributeDefinitions:
           - AttributeName: messageId
+            AttributeType: N
+          - AttributeName: recipient
             AttributeType: S
+        GlobalSecondaryIndexes:
+          - IndexName: recipient-index
+            KeySchema:
+              - AttributeName: recipient
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+            ProvisionedThroughput:
+              ReadCapacityUnits: 5
+              WriteCapacityUnits: 5
         KeySchema:
           - AttributeName: messageId
             KeyType: HASH

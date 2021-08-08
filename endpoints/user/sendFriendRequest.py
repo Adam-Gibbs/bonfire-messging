@@ -1,9 +1,11 @@
-from endpoints.helpers.getRequestData import get_body, check_fields
-from endpoints.user_methods.getUsername import get_username
-from endpoints.helpers.returns import generate_response
-from endpoints.exceptions import handle_exception
-import boto3
 import os
+
+import boto3
+from endpoints.exceptions import handle_exception
+from endpoints.helpers.getRequestData import check_fields, get_body
+from endpoints.helpers.returns import generate_response
+from endpoints.user_methods.checkFriends import check_friends
+from endpoints.user_methods.getUsername import get_username
 
 
 def lambda_handler(event, context):
@@ -19,6 +21,12 @@ def lambda_handler(event, context):
     message = params['message']
 
     try:
+        if username in check_friends(current_user):
+            return generate_response(200, {
+                "success": False,
+                "message": "Already Friends"
+            })
+
         client_db.put_item(
             TableName=os.environ['FRIEND_REQUESTS_TABLE'],
             Item={
@@ -28,8 +36,10 @@ def lambda_handler(event, context):
                 'message': {'S': message}
             }
         )
+
         return generate_response(200, {
-            "success": True
+            "success": True,
+            "message": "Request sent"
         })
 
     except Exception as e:

@@ -14,8 +14,9 @@ def get_header_auth(event):
     return event.get("headers").get("Authorization")
 
 
-def check_fields(fields, types, event):
+def check_fields(fields, types, event, optional_fields=[], optional_types=[]):
     body = get_body(event)
+    print(body)
     for index, field in enumerate(fields):
         if body.get(field) is None:
             return generate_response(400, {
@@ -27,6 +28,15 @@ def check_fields(fields, types, event):
             return generate_response(400, {
                 "success": False,
                 "message": f"{field} is required to be type {types[index]}",
+            })
+
+    for index, optional_field in enumerate(optional_fields):
+        if type(body.get(optional_field)) is not optional_types[index]:
+            return generate_response(400, {
+                "success": False,
+                "message":
+                    f"{optional_field} is required " +
+                    f"to be type {optional_types[index]}",
             })
 
     return None
