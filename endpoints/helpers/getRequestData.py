@@ -24,6 +24,8 @@ def check_fields(fields, types, event):
             })
 
         if type(field) is not types[index]:
+            print(field)
+            print(type(field))
             return generate_response(400, {
                 "success": False,
                 "message": f"{field} is required to be type {types[index]}",
