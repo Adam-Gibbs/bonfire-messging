@@ -304,6 +304,7 @@ resources:
           ReadCapacityUnits: 5
           WriteCapacityUnits: 5
         TableName: ${self:custom.usersTable}
+
     ChatsTable:
       Type: "AWS::DynamoDB::Table"
       Properties:
@@ -317,6 +318,7 @@ resources:
           ReadCapacityUnits: 5
           WriteCapacityUnits: 5
         TableName: ${self:custom.chatsTable}
+
     MessagesTable:
       Type: "AWS::DynamoDB::Table"
       Properties:
@@ -330,6 +332,7 @@ resources:
           ReadCapacityUnits: 5
           WriteCapacityUnits: 5
         TableName: ${self:custom.messagesTable}
+
     ChatMembersTable:
       Type: "AWS::DynamoDB::Table"
       Properties:
@@ -343,6 +346,7 @@ resources:
           ReadCapacityUnits: 5
           WriteCapacityUnits: 5
         TableName: ${self:custom.chatMembersTable}
+
     MediaTable:
       Type: "AWS::DynamoDB::Table"
       Properties:
@@ -356,19 +360,21 @@ resources:
           ReadCapacityUnits: 5
           WriteCapacityUnits: 5
         TableName: ${self:custom.mediaTable}
+
     FriendRequestsTable:
       Type: "AWS::DynamoDB::Table"
       Properties:
         AttributeDefinitions:
-          - AttributeName: friendRequestId
+          - AttributeName: to
             AttributeType: S
         KeySchema:
-          - AttributeName: friendRequestId
+          - AttributeName: to
             KeyType: HASH
         ProvisionedThroughput:
           ReadCapacityUnits: 5
           WriteCapacityUnits: 5
         TableName: ${self:custom.friendRequestsTable}
+
     FriendsTable:
       Type: "AWS::DynamoDB::Table"
       Properties:
@@ -382,6 +388,7 @@ resources:
           ReadCapacityUnits: 5
           WriteCapacityUnits: 5
         TableName: ${self:custom.friendsTable}
+
     PingsTable:
       Type: "AWS::DynamoDB::Table"
       Properties:
@@ -395,6 +402,7 @@ resources:
           ReadCapacityUnits: 5
           WriteCapacityUnits: 5
         TableName: ${self:custom.pingsTable}
+
     RecipientsTable:
       Type: "AWS::DynamoDB::Table"
       Properties:
