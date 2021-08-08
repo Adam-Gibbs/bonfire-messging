@@ -31,7 +31,8 @@ def check_fields(fields, types, event, optional_fields=[], optional_types=[]):
             })
 
     for index, optional_field in enumerate(optional_fields):
-        if type(body.get(optional_field)) is not optional_types[index]:
+        if body.get(optional_field) is not None and \
+           type(body.get(optional_field)) is not optional_types[index]:
             return generate_response(400, {
                 "success": False,
                 "message":
