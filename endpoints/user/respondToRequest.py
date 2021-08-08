@@ -17,10 +17,11 @@ def lambda_handler(event, context):
 
     friend_request_id = params['friendRequestId']
     accepted = params['accepted']
+    print(f"friend_request_id: {friend_request_id}, accepted: {accepted}")
 
     try:
         if accepted is True:
-            other_user = client_db.get_item(
+            resp = client_db.get_item(
                 TableName=os.environ['FRIEND_REQUESTS_TABLE'],
                 Key={
                     'friendRequestId': {'S': friend_request_id}
@@ -41,7 +42,7 @@ def lambda_handler(event, context):
             Key={
                 'friendRequestId': {'S': friend_request_id}
             }
-        ).get('Items').get("requestFrom")
+        )
 
         return generate_response(200, {
             "success": True
