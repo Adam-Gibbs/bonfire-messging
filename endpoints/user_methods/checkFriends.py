@@ -40,7 +40,7 @@ def check_friends(user):
     if 'Items' in resp2:
         total = get_all_friends(resp2.get("Items"), 'friendTo')
     else:
-        total = []
+        total = ['bob']
 
     total.append(resp1_items)
 
