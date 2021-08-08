@@ -115,6 +115,7 @@ functions:
           path: /auth/forgotPassword/confirm
           method: post
 
+
   getInfo:
     handler: endpoints/user/getUserInfo.lambda_handler
     events:
@@ -142,6 +143,17 @@ functions:
     events:
       - http:
           path: /user/friendRequests
+          method: post
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+
+  respondToFriendRequest:
+    handler: endpoints/user/respondToRequest.lambda_handler
+    events:
+      - http:
+          path: /user/respondToRequest
           method: post
           authorizer:
             type: COGNITO_USER_POOLS
