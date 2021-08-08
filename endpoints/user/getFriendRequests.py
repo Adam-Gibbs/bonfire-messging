@@ -1,7 +1,6 @@
 import os
 
 import boto3
-from boto3.dynamodb.conditions import Key
 import endpoints.helpers.config as config
 from endpoints.exceptions import handle_exception
 from endpoints.helpers.returns import generate_response
@@ -15,7 +14,11 @@ def lambda_handler(event, context):
     try:
         resp = client_db.query(
             TableName=os.environ['FRIEND_REQUESTS_TABLE'],
-            KeyConditionExpression=Key('to').eq(current_user)
+            IndexName='to-index',
+            KeyConditionExpression='to = :to',
+            ExpressionAttributeValues={
+                ':to': {'S': current_user}
+            }
         )
 
         print(resp)

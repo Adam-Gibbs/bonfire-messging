@@ -29,7 +29,7 @@ def lambda_handler(event, context):
             }
         )
         return generate_response(200, {
-            "Success": True
+            "success": True
         })
 
     except Exception as e:
