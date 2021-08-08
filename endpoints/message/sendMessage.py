@@ -25,7 +25,7 @@ def lambda_handler(event, context):
 
     recipient = params['recipient']
     message = params['message']
-    reply_id = ""
+    reply_id = None
     if "replyId" in params:
         reply_id = params["replyId"]
 
@@ -36,11 +36,13 @@ def lambda_handler(event, context):
                 "message": f"You are not friends with {recipient}"
             })
 
-        print(f"unique key: {type(unique_key(current_user))}")
+        unique = unique_key(current_user)
+
+        print(f"called with recipient: {recipient}, message: {message}, replyId: {reply_id}, created unique key: {unique}")
         client_db.put_item(
             TableName=os.environ['MESSAGES_TABLE'],
             Item={
-                'messageId': {'N': unique_key(current_user)},
+                'messageId': {'N': unique},
                 'recipient': {'S': recipient},
                 'replyId': {'N': reply_id},
                 'message': {'S': message}
