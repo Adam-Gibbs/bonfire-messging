@@ -40,7 +40,7 @@ def lambda_handler(event, context):
         client_db.put_item(
             TableName=os.environ['MESSAGES_TABLE'],
             Item={
-                'messageId': unique_key(current_user),
+                'messageId': {'N': unique_key(current_user)},
                 'recipient': {'S': recipient},
                 'replyId': {'N': reply_id},
                 'message': {'S': message}
