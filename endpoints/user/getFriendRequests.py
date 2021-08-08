@@ -13,7 +13,7 @@ def lambda_handler(event, context):
         resp = client_db.get_item(
             TableName=os.environ['FRIEND_REQUESTS_TABLE'],
             Key={
-                'to': {'S': current_user}
+                'to-index': {'S': current_user}
             }
         )
 
