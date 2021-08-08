@@ -406,9 +406,9 @@ resources:
           - AttributeName: friendLinkId
             AttributeType: S
           - AttributeName: friendTo
-            KeyType: S
+            AttributeType: S
           - AttributeName: friendOf
-            KeyType: S
+            AttributeType: S
         GlobalSecondaryIndexes:
           - IndexName: friends-index
             KeySchema:
