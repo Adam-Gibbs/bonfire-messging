@@ -8,13 +8,14 @@ plugins:
   - serverless-dynamodb-local
 
 custom:
+  versionSuffix: 'v0.1'
   functionPrefix: 'ping-messaging-${self:provider.stage}'
-  usersTable: '${self:custom.functionPrefix}.users'
+  usersTable: '${self:custom.functionPrefix}.users-${self:custom.versionSuffix}'
   chatsTable: '${self:custom.functionPrefix}.chats'
   messagesTable: '${self:custom.functionPrefix}.messages'
   chatMembersTable: '${self:custom.functionPrefix}.chatMembers'
   mediaTable: '${self:custom.functionPrefix}.media'
-  friendRequestsTable: '${self:custom.functionPrefix}.friendRequests'
+  friendRequestsTable: '${self:custom.functionPrefix}.friendRequests-${self:custom.versionSuffix}'
   friendsTable: '${self:custom.functionPrefix}.friends'
   pingsTable: '${self:custom.functionPrefix}.pings'
   recipientsTable: '${self:custom.functionPrefix}.recipients'
