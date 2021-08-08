@@ -5,7 +5,6 @@ import boto3
 def get_all_friends(list, section):
     total = []
     for friend in list:
-        print(friend)
         total.append(friend.get(section).get("S"))
 
     return total

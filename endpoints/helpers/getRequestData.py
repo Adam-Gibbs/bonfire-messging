@@ -16,7 +16,6 @@ def get_header_auth(event):
 
 def check_fields(fields, types, event, optional_fields=[], optional_types=[]):
     body = get_body(event)
-    print(body)
     for index, field in enumerate(fields):
         if body.get(field) is None:
             return generate_response(400, {
