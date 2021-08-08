@@ -14,7 +14,7 @@ def lambda_handler(event, context):
     try:
         resp = client_db.query(
             TableName=os.environ['FRIENDS_TABLE'],
-            KeyConditionExpression='friendTo = :currentUser' +
+            KeyConditionExpression='friendTo = :currentUser ' +
                                    'OR friendOf = :currentUser',
             ExpressionAttributeValues={
                 ':currentUser': {'S': current_user}
