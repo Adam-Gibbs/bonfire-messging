@@ -1,7 +1,7 @@
 import os
 
-import boto3
-from boto3.dynamodb.conditions import Key
+from dynamof.operations import query
+from dynamof.conditions import attr
 from endpoints.exceptions import handle_exception
 from endpoints.helpers.returns import generate_response
 from endpoints.user_methods.getUsername import get_username
@@ -9,13 +9,12 @@ from endpoints.user_methods.getUsername import get_username
 
 def lambda_handler(event, context):
     current_user = get_username(event)
-    client_db = boto3.client('dynamodb')
 
     try:
-        resp = client_db.query(
-            TableName=os.environ['FRIEND_REQUESTS_TABLE'],
-            IndexName='to-index',
-            KeyConditionExpression=Key('to').eq(current_user)
+        resp = query(
+            table_name=os.environ['FRIEND_REQUESTS_TABLE'],
+            conditions=attr('to').equals(current_user),
+            index_name='to-index'
         )
 
         print(resp)
