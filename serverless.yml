@@ -405,6 +405,22 @@ resources:
         AttributeDefinitions:
           - AttributeName: friendLinkId
             AttributeType: S
+          - AttributeName: friendTo
+            KeyType: S
+          - AttributeName: friendOf
+            KeyType: S
+        GlobalSecondaryIndexes:
+          - IndexName: friends-index
+            KeySchema:
+              - AttributeName: friendTo
+                KeyType: HASH
+              - AttributeName: friendOf
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+            ProvisionedThroughput:
+              ReadCapacityUnits: 5
+              WriteCapacityUnits: 5
         KeySchema:
           - AttributeName: friendLinkId
             KeyType: HASH
