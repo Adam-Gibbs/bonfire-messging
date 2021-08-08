@@ -369,7 +369,7 @@ resources:
               ReadCapacityUnits: 5
               WriteCapacityUnits: 5
         KeySchema:
-          - AttributeName: to
+          - AttributeName: friendRequestId
             KeyType: HASH
         ProvisionedThroughput:
           ReadCapacityUnits: 5

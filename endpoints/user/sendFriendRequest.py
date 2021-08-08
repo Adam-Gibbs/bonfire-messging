@@ -22,6 +22,7 @@ def lambda_handler(event, context):
         client_db.put_item(
             TableName=os.environ['FRIEND_REQUESTS_TABLE'],
             Item={
+                'friendRequestId': {'S': current_user+username},
                 'from': {'S': current_user},
                 'to': {'S': username},
                 'message': {'S': message}
