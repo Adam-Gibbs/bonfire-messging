@@ -26,7 +26,11 @@ def lambda_handler(event, context):
                 Key={
                     'friendRequestId': {'S': friend_request_id}
                 }
-            ).get('Items').get("requestFrom")
+            )
+
+            print(resp)
+            other_user = resp.get('Items').get("requestFrom")
+            print(other_user)
 
             client_db.put_item(
                 TableName=os.environ['FRIENDS_TABLE'],
