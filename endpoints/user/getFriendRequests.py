@@ -14,10 +14,10 @@ def lambda_handler(event, context):
     try:
         resp = client_db.query(
             TableName=os.environ['FRIEND_REQUESTS_TABLE'],
-            IndexName='to-index',
-            KeyConditionExpression='to = :to',
+            IndexName='requestTo-index',
+            KeyConditionExpression='requestTo = :requestTo',
             ExpressionAttributeValues={
-                ':to': {'S': current_user}
+                ':requestTo': {'S': current_user}
             }
         )
 

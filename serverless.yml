@@ -8,7 +8,7 @@ plugins:
   - serverless-dynamodb-local
 
 custom:
-  versionSuffix: 'v0.1'
+  versionSuffix: 'v0.2'
   functionPrefix: 'ping-messaging-${self:provider.stage}'
   usersTable: '${self:custom.functionPrefix}.users.${self:custom.versionSuffix}'
   chatsTable: '${self:custom.functionPrefix}.chats'
@@ -356,12 +356,12 @@ resources:
         AttributeDefinitions:
           - AttributeName: friendRequestId
             AttributeType: S
-          - AttributeName: to
+          - AttributeName: requestTo
             AttributeType: S
         GlobalSecondaryIndexes:
-          - IndexName: to-index
+          - IndexName: requestTo-index
             KeySchema:
-              - AttributeName: to
+              - AttributeName: requestTo
                 KeyType: HASH
             Projection:
               ProjectionType: ALL
