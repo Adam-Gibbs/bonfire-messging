@@ -361,7 +361,7 @@ resources:
       Properties:
         AttributeDefinitions:
           - AttributeName: messageId
-            AttributeType: N
+            AttributeType: S
           - AttributeName: recipient
             AttributeType: S
         GlobalSecondaryIndexes:

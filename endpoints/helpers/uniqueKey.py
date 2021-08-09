@@ -14,5 +14,4 @@ class hashable_object:
 
 def unique_key(user):
     hash_obj = hashable_object(user)
-    print(f"hash obj type: {type(hash(hash_obj))}")
     return hash(hash_obj)
