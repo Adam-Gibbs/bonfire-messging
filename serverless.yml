@@ -195,6 +195,29 @@ functions:
               Ref: ApiGatewayAuthorizer
 
 
+  getFires:
+    handler: endpoints/fire/new.lambda_handler
+    events:
+      - http:
+          path: /fire
+          method: post
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+
+  checkFires:
+    handler: endpoints/fire/get.lambda_handler
+    events:
+      - http:
+          path: /fire
+          method: get
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+
+
 
 resources:
   Resources:
@@ -507,6 +530,16 @@ resources:
             AttributeType: S
           - AttributeName: username
             AttributeType: S
+        GlobalSecondaryIndexes:
+          - IndexName: username-index
+            KeySchema:
+              - AttributeName: username
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+            ProvisionedThroughput:
+              ReadCapacityUnits: 5
+              WriteCapacityUnits: 5
         KeySchema:
           - AttributeName: recipientId
             KeyType: HASH

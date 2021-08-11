@@ -49,7 +49,7 @@ def lambda_handler(event, context):
 
         fire_id = str(unique_key(current_user))
         client_db.put_item(
-            TableName=os.environ['MESSAGES_TABLE'],
+            TableName=os.environ['FIRES_TABLE'],
             Item={
                 'fireId': {'S': fire_id},
                 'location': {'S': location},
@@ -67,7 +67,6 @@ def lambda_handler(event, context):
                     'username': {'S': recipient}
                 }
             )
-
 
         return generate_response(200, {
             "success": True,
