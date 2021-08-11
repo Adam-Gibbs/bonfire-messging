@@ -17,7 +17,7 @@ def lambda_handler(event, context):
             IndexName='public-index',
             KeyConditionExpression='public = :public',
             ExpressionAttributeValues={
-                ':public': {'S': True}
+                ':public': {'S': "True"}
             }
         )
 
