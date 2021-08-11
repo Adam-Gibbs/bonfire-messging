@@ -30,7 +30,7 @@ def lambda_handler(event, context):
     if "public" in params:
         public = params["public"]
 
-    if distance_km < 100:
+    if distance_km > 100:
         return generate_response(400, {
             "success": False,
             "message": "You cannot search a distance greater than 100km",
