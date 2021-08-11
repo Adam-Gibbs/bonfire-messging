@@ -43,7 +43,7 @@ def lambda_handler(event, context):
                     client_db.get_item(
                         TableName=os.environ['FIRES_TABLE'],
                         Key={
-                            'fireId': {'S': item["fireId"]}
+                            'fireId': {'S': item["fireId"]["S"]}
                         }
                     )
                 )
