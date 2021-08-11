@@ -63,7 +63,10 @@ def lambda_handler(event, context):
             if 'Items' in public_fires:
                 # If public chat is within requested distance, added to list
                 for item in public_fires.get("Items"):
-                    point_location = (float(item['lat']), float(item['long']))
+                    point_location = (
+                        float(item['lat']['S']),
+                        float(item['long']['S'])
+                    )
                     if (
                         distance.distance(location, point_location).km
                             <= distance_km):
