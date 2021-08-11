@@ -8,16 +8,15 @@ plugins:
   - serverless-dynamodb-local
 
 custom:
-  versionSuffix: 'v0.3'
   functionPrefix: 'ping-messaging-${self:provider.stage}'
-  usersTable: '${self:custom.functionPrefix}.users.${self:custom.versionSuffix}'
+  usersTable: '${self:custom.functionPrefix}.users.v0.3'
   chatsTable: '${self:custom.functionPrefix}.chats'
-  messagesTable: '${self:custom.functionPrefix}.messages.${self:custom.versionSuffix}'
+  messagesTable: '${self:custom.functionPrefix}.v0.4'
   chatMembersTable: '${self:custom.functionPrefix}.chatMembers'
   mediaTable: '${self:custom.functionPrefix}.media'
-  friendRequestsTable: '${self:custom.functionPrefix}.friendRequests.${self:custom.versionSuffix}'
+  friendRequestsTable: '${self:custom.functionPrefix}.friendRequests.v0.3'
   friendsTable: '${self:custom.functionPrefix}.friends'
-  firesTable: '${self:custom.functionPrefix}.fires.${self:custom.versionSuffix}'
+  firesTable: '${self:custom.functionPrefix}.fires.v0.4'
   recipientsTable: '${self:custom.functionPrefix}.recipients'
   identityPool: 'pingMessaging${self:provider.stage}'
   pythonRequirements:

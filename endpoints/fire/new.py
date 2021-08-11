@@ -1,8 +1,11 @@
 import os
+import time
 
 import boto3
+from geopy.geocoders import Nominatim
 from endpoints.exceptions import handle_exception
-from endpoints.helpers.getRequestData import check_fields, get_body
+from endpoints.helpers.getRequestData import check_fields, get_body, \
+                                             validate_dict
 from endpoints.helpers.returns import generate_response
 from endpoints.helpers.uniqueKey import unique_key
 from endpoints.user_methods.checkFriends import check_friends
@@ -13,10 +16,11 @@ def lambda_handler(event, context):
     params = get_body(event)
     current_user = get_username(event)
     client_db = boto3.client('dynamodb')
+    geo = Nominatim(user_agent="GetLoc")
 
     invalid_fields = check_fields(
         ["message", "location", "public"],
-        [str, str, bool],
+        [str, dict, bool],
         event,
         ["recipients"],
         [list]
@@ -30,6 +34,15 @@ def lambda_handler(event, context):
     recipients = []
     if "recipients" in params:
         recipients = params["recipients"]
+
+    invalid_dict = validate_dict(
+        "location",
+        location,
+        ["lat", "long"],
+        [float, float]
+    )
+    if invalid_dict is not None:
+        return invalid_dict
 
     try:
         if not public and len(recipients) < 1:
@@ -55,13 +68,17 @@ def lambda_handler(event, context):
                 })
 
         fire_id = str(unique_key(current_user))
+        location_name = geo.reverse(f"{location['lat']}, {location['long']}")
         client_db.put_item(
             TableName=os.environ['FIRES_TABLE'],
             Item={
                 'fireId': {'S': fire_id},
-                'location': {'S': location},
+                'lat': {'S': str(location["lat"])},
+                'long': {'S': str(location["long"])},
+                'location': {'S': location_name},
                 'publicFire': {'S': str(public)},
-                'message': {'S': message}
+                'message': {'S': message},
+                'time': {'S': str(time.time())}
             }
         )
 

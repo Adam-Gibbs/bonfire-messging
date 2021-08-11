@@ -1,4 +1,5 @@
 import os
+import time
 
 import boto3
 from endpoints.exceptions import handle_exception
@@ -43,7 +44,8 @@ def lambda_handler(event, context):
                 'messageId': {'S': str(unique_key(current_user))},
                 'recipient': {'S': recipient},
                 'replyId': {'S': str(reply_id)},
-                'message': {'S': message}
+                'message': {'S': message},
+                'time': {'S': str(time.time())}
             }
         )
 
