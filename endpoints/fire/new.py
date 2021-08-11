@@ -53,7 +53,7 @@ def lambda_handler(event, context):
             Item={
                 'fireId': {'S': fire_id},
                 'location': {'S': location},
-                'public': {'S': public},
+                'public': {'B': public},
                 'message': {'S': message}
             }
         )
