@@ -12,11 +12,53 @@ from endpoints.user_methods.checkFriends import check_friends
 from endpoints.user_methods.getUsername import get_username
 
 
+def get_location_name(lat, long):
+    geo = Nominatim(user_agent="GetLoc")
+    location_name = geo.reverse(f"{lat}, {long}")
+    if location_name is None:
+        return 'Unknown, Unknown'
+    location_name = location_name.address.split(",")
+
+    if len(location_name) == 1:
+        return f'Unknown, {location_name[0]}'
+
+    if len(location_name) == 2:
+        return f'{location_name[0]}, {location_name[1]}'
+
+    if len(location_name) > 2:
+        return f'{location_name[1]}, {location_name[2]}'
+
+
+def check_recipients(public, recipients, user):
+    if not public and len(recipients) < 1:
+        return generate_response(400, {
+                "success": False,
+                "message": "Your private chat does "
+                           "not specify any recipients"
+            })
+
+    elif public and len(recipients) > 0:
+        return generate_response(400, {
+                "success": False,
+                "message": "Your public chat can "
+                           "not specify any recipients"
+            })
+
+    friends = check_friends(user)
+    for recipient in recipients:
+        if recipient not in friends:
+            return generate_response(400, {
+                "success": False,
+                "message": f"You are not friends with {recipient}"
+            })
+
+    return None
+
+
 def lambda_handler(event, context):
     params = get_body(event)
     current_user = get_username(event)
     client_db = boto3.client('dynamodb')
-    geo = Nominatim(user_agent="GetLoc")
 
     invalid_fields = check_fields(
         ["message", "location", "public"],
@@ -44,39 +86,20 @@ def lambda_handler(event, context):
     if invalid_dict is not None:
         return invalid_dict
 
+    invalid_recipients = check_recipients(public, recipients, current_user)
+    if invalid_recipients is not None:
+        return invalid_recipients
+
     try:
-        if not public and len(recipients) < 1:
-            return generate_response(400, {
-                    "success": False,
-                    "message": "Your private chat does "
-                               "not specify any recipients"
-                })
-
-        elif public and len(recipients) > 0:
-            return generate_response(400, {
-                    "success": False,
-                    "message": "Your public chat can "
-                               "not specify any recipients"
-                })
-
-        friends = check_friends(current_user)
-        for recipient in recipients:
-            if recipient not in friends:
-                return generate_response(400, {
-                    "success": False,
-                    "message": f"You are not friends with {recipient}"
-                })
-
         fire_id = str(unique_key(current_user))
-        location_name = geo.reverse(f"{location['lat']}, {location['long']}")
-        location_name = location_name.address.split(",")
+        location_name = get_location_name(location['lat'], location['long'])
         client_db.put_item(
             TableName=os.environ['FIRES_TABLE'],
             Item={
                 'fireId': {'S': fire_id},
                 'lat': {'S': str(location["lat"])},
                 'long': {'S': str(location["long"])},
-                'location': {'S': f"{location_name[2]}, {location_name[3]}"},
+                'location': {'S': location_name},
                 'publicFire': {'S': str(public)},
                 'message': {'S': message},
                 'time': {'S': str(time.time())}
