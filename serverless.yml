@@ -17,7 +17,7 @@ custom:
   mediaTable: '${self:custom.functionPrefix}.media'
   friendRequestsTable: '${self:custom.functionPrefix}.friendRequests.${self:custom.versionSuffix}'
   friendsTable: '${self:custom.functionPrefix}.friends'
-  firesTable: '${self:custom.functionPrefix}.fires'
+  firesTable: '${self:custom.functionPrefix}.fires.${self:custom.versionSuffix}'
   recipientsTable: '${self:custom.functionPrefix}.recipients'
   identityPool: 'pingMessaging${self:provider.stage}'
   pythonRequirements:
