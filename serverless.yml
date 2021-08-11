@@ -17,7 +17,7 @@ custom:
   mediaTable: '${self:custom.functionPrefix}.media'
   friendRequestsTable: '${self:custom.functionPrefix}.friendRequests.${self:custom.versionSuffix}'
   friendsTable: '${self:custom.functionPrefix}.friends'
-  pingsTable: '${self:custom.functionPrefix}.pings'
+  firesTable: '${self:custom.functionPrefix}.fires'
   recipientsTable: '${self:custom.functionPrefix}.recipients'
   identityPool: 'pingMessaging${self:provider.stage}'
   pythonRequirements:
@@ -68,7 +68,7 @@ provider:
     MEDIA_TABLE: ${self:custom.mediaTable}
     FRIEND_REQUESTS_TABLE: ${self:custom.friendRequestsTable}
     FRIENDS_TABLE: ${self:custom.friendsTable}
-    PINGS_TABLE: ${self:custom.pingsTable}
+    FIRES_TABLE: ${self:custom.firesTable}
     RECIPIENTS_TABLE: ${self:custom.recipientsTable}
 
 functions:
@@ -473,25 +473,39 @@ resources:
           WriteCapacityUnits: 5
         TableName: ${self:custom.friendsTable}
 
-    PingsTable:
+    FiresTable:
       Type: "AWS::DynamoDB::Table"
       Properties:
         AttributeDefinitions:
-          - AttributeName: pingId
+          - AttributeName: fireId
             AttributeType: S
+          - AttributeName: public
+            AttributeType: S
+        GlobalSecondaryIndexes:
+          - IndexName: public-index
+            KeySchema:
+              - AttributeName: public
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+            ProvisionedThroughput:
+              ReadCapacityUnits: 5
+              WriteCapacityUnits: 5
         KeySchema:
-          - AttributeName: pingId
+          - AttributeName: fireId
             KeyType: HASH
         ProvisionedThroughput:
           ReadCapacityUnits: 5
           WriteCapacityUnits: 5
-        TableName: ${self:custom.pingsTable}
+        TableName: ${self:custom.firesTable}
 
     RecipientsTable:
       Type: "AWS::DynamoDB::Table"
       Properties:
-        AttributeDefinitions:        
+        AttributeDefinitions:
           - AttributeName: recipientId
+            AttributeType: S
+          - AttributeName: username
             AttributeType: S
         KeySchema:
           - AttributeName: recipientId

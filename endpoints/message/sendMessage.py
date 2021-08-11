@@ -1,11 +1,12 @@
-from endpoints.helpers.getRequestData import get_body, check_fields
-from endpoints.user_methods.getUsername import get_username
-from endpoints.helpers.returns import generate_response
-from endpoints.exceptions import handle_exception
-from endpoints.user_methods.checkFriends import check_friends
-from endpoints.helpers.uniqueKey import unique_key
-import boto3
 import os
+
+import boto3
+from endpoints.exceptions import handle_exception
+from endpoints.helpers.getRequestData import check_fields, get_body
+from endpoints.helpers.returns import generate_response
+from endpoints.helpers.uniqueKey import unique_key
+from endpoints.user_methods.checkFriends import check_friends
+from endpoints.user_methods.getUsername import get_username
 
 
 def lambda_handler(event, context):
@@ -31,7 +32,7 @@ def lambda_handler(event, context):
 
     try:
         if recipient not in check_friends(current_user):
-            return generate_response(200, {
+            return generate_response(400, {
                 "success": False,
                 "message": f"You are not friends with {recipient}"
             })
