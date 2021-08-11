@@ -504,16 +504,6 @@ resources:
             AttributeType: S
           - AttributeName: publicFire
             AttributeType: S
-        GlobalSecondaryIndexes:
-          - IndexName: publicFire-index
-            KeySchema:
-              - AttributeName: publicFire
-                KeyType: HASH
-            Projection:
-              ProjectionType: ALL
-            ProvisionedThroughput:
-              ReadCapacityUnits: 5
-              WriteCapacityUnits: 5
         KeySchema:
           - AttributeName: fireId
             KeyType: HASH
