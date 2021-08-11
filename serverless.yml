@@ -502,12 +502,12 @@ resources:
         AttributeDefinitions:
           - AttributeName: fireId
             AttributeType: S
-          - AttributeName: public
+          - AttributeName: publicFire
             AttributeType: S
         GlobalSecondaryIndexes:
-          - IndexName: public-index
+          - IndexName: publicFire-index
             KeySchema:
-              - AttributeName: public
+              - AttributeName: publicFire
                 KeyType: HASH
             Projection:
               ProjectionType: ALL

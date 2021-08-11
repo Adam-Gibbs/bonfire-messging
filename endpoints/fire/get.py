@@ -14,10 +14,10 @@ def lambda_handler(event, context):
 
         public_fires = client_db.query(
             TableName=os.environ['FIRES_TABLE'],
-            IndexName='public-index',
-            KeyConditionExpression='public = :public',
+            IndexName='publicFire-index',
+            KeyConditionExpression='publicFire = :publicFire',
             ExpressionAttributeValues={
-                ':public': {'S': "True"}
+                ':publicFire': {'S': "True"}
             }
         )
 
