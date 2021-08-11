@@ -103,6 +103,7 @@ def lambda_handler(event, context):
         current_user = get_username(event)
         client_db = boto3.client('dynamodb')
 
+        near_public_fires = []
         if public is not False:
             near_public_fires = get_nearby_public_fires(
                 location,
@@ -110,13 +111,14 @@ def lambda_handler(event, context):
                 client_db
             )
 
+        invited_fires = []
         if public is not True:
             invited_fires = get_invited_fires(current_user, client_db)
 
         return generate_response(200, {
             "success": True,
-            "public": near_public_fires or [],
-            "invited": invited_fires or [],
+            "public": near_public_fires,
+            "invited": invited_fires,
         })
 
     except Exception as e:
