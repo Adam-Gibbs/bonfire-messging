@@ -69,13 +69,14 @@ def lambda_handler(event, context):
 
         fire_id = str(unique_key(current_user))
         location_name = geo.reverse(f"{location['lat']}, {location['long']}")
+        location_name = location_name.address.split(",")
         client_db.put_item(
             TableName=os.environ['FIRES_TABLE'],
             Item={
                 'fireId': {'S': fire_id},
                 'lat': {'S': str(location["lat"])},
                 'long': {'S': str(location["long"])},
-                'location': {'S': location_name.address},
+                'location': {'S': f"{location_name[2]}, {location_name[3]}"},
                 'publicFire': {'S': str(public)},
                 'message': {'S': message},
                 'time': {'S': str(time.time())}
