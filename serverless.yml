@@ -209,8 +209,8 @@ functions:
     handler: endpoints/fire/get.lambda_handler
     events:
       - http:
-          path: /fire
-          method: get
+          path: /fire/nearby
+          method: post
           authorizer:
             type: COGNITO_USER_POOLS
             authorizerId:
