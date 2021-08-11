@@ -9,6 +9,60 @@ from endpoints.user_methods.getUsername import get_username
 from endpoints.helpers.returns import generate_response
 
 
+def get_nearby_public_fires(user_location, user_distance, client_db):
+    near_public_fires = []
+
+    public_fires = client_db.query(
+        TableName=os.environ['FIRES_TABLE'],
+        IndexName='publicFire-index',
+        KeyConditionExpression='publicFire = :publicFire',
+        ExpressionAttributeValues={
+            ':publicFire': {'S': "True"}
+        }
+    )
+
+    if 'Items' in public_fires:
+        # If public chat is within requested distance, added to list
+        for item in public_fires.get("Items"):
+            point_location = (
+                float(item['lat']['S']),
+                float(item['long']['S'])
+            )
+            if (
+                distance.distance(user_location, point_location).km
+                    <= user_distance):
+                near_public_fires.append(item)
+
+    return near_public_fires
+
+
+def get_invited_fires(user, client_db):
+    invited_fires = []
+
+    invited = client_db.query(
+        TableName=os.environ['RECIPIENTS_TABLE'],
+        IndexName='username-index',
+        KeyConditionExpression='username = :current_user',
+        ExpressionAttributeValues={
+            ':current_user': {'S': user}
+        }
+    )
+
+    if 'Items' in invited:
+        for item in invited.get("Items"):
+            retrieved = client_db.get_item(
+                TableName=os.environ['FIRES_TABLE'],
+                Key={
+                    'fireId': {'S': item["fireId"]["S"]}
+                }
+            )
+
+            if 'Item' in retrieved:
+                invited_fires.append(retrieved.get('Item'))
+
+    return invited_fires
+
+
 def lambda_handler(event, context):
     params = get_body(event)
     current_user = get_username(event)
@@ -49,50 +103,15 @@ def lambda_handler(event, context):
         current_user = get_username(event)
         client_db = boto3.client('dynamodb')
 
-        near_public_fires = []
         if public is not False:
-            public_fires = client_db.query(
-                TableName=os.environ['FIRES_TABLE'],
-                IndexName='publicFire-index',
-                KeyConditionExpression='publicFire = :publicFire',
-                ExpressionAttributeValues={
-                    ':publicFire': {'S': "True"}
-                }
+            near_public_fires = get_nearby_public_fires(
+                location,
+                distance_km,
+                client_db
             )
 
-            if 'Items' in public_fires:
-                # If public chat is within requested distance, added to list
-                for item in public_fires.get("Items"):
-                    point_location = (
-                        float(item['lat']['S']),
-                        float(item['long']['S'])
-                    )
-                    if (
-                        distance.distance(location, point_location).km
-                            <= distance_km):
-                        near_public_fires.append(item)
-
-        invited_fires = []
         if public is not True:
-            invited = client_db.query(
-                TableName=os.environ['RECIPIENTS_TABLE'],
-                IndexName='username-index',
-                KeyConditionExpression='username = :current_user',
-                ExpressionAttributeValues={
-                    ':current_user': {'S': current_user}
-                }
-            )
-
-            if 'Items' in invited:
-                for item in invited.get("Items"):
-                    invited_fires.append(
-                        client_db.get_item(
-                            TableName=os.environ['FIRES_TABLE'],
-                            Key={
-                                'fireId': {'S': item["fireId"]["S"]}
-                            }
-                        )
-                    )
+            invited_fires = get_invited_fires(current_user, client_db)
 
         return generate_response(200, {
             "success": True,
