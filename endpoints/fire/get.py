@@ -24,6 +24,15 @@ def lambda_handler(event, context):
     if invalid_fields is not None:
         return invalid_fields
 
+    invalid_dict = validate_dict(
+        "location",
+        params['location'],
+        ["lat", "long"],
+        [float, float]
+    )
+    if invalid_dict is not None:
+        return invalid_dict
+
     location = (params['location']['lat'], params['location']['long'])
     distance_km = params['distance']
     public = None
@@ -35,15 +44,6 @@ def lambda_handler(event, context):
             "success": False,
             "message": "You cannot search a distance greater than 100km",
         })
-
-    invalid_dict = validate_dict(
-        "location",
-        location,
-        ["lat", "long"],
-        [float, float]
-    )
-    if invalid_dict is not None:
-        return invalid_dict
 
     try:
         current_user = get_username(event)
