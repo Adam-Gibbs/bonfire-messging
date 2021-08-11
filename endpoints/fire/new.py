@@ -75,7 +75,7 @@ def lambda_handler(event, context):
                 'fireId': {'S': fire_id},
                 'lat': {'S': str(location["lat"])},
                 'long': {'S': str(location["long"])},
-                'location': {'S': location_name},
+                'location': {'S': location_name.address},
                 'publicFire': {'S': str(public)},
                 'message': {'S': message},
                 'time': {'S': str(time.time())}
