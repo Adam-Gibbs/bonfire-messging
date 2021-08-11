@@ -48,11 +48,8 @@ def get_invited_fires(user, client_db):
         }
     )
 
-    print(f"invited {invited} \n")
-
     if 'Items' in invited:
         for item in invited.get("Items"):
-            print(f"item {item['fireId']['S']} \n")
             retrieved = client_db.get_item(
                 TableName=os.environ['FIRES_TABLE'],
                 Key={
@@ -60,7 +57,6 @@ def get_invited_fires(user, client_db):
                 }
             )
 
-            print(f"retrieved {retrieved} \n")
             if 'Item' in retrieved:
                 invited_fires.append(retrieved.get('Item'))
 
