@@ -39,6 +39,13 @@ def lambda_handler(event, context):
                                "not specify any recipients"
                 })
 
+        elif public and len(recipients) > 0:
+            return generate_response(400, {
+                    "success": False,
+                    "message": "Your public chat can "
+                               "not specify any recipients"
+                })
+
         friends = check_friends(current_user)
         for recipient in recipients:
             if recipient not in friends:
