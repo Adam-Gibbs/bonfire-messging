@@ -27,6 +27,19 @@ def lambda_handler(event, context):
                 "message": "Already Friends"
             })
 
+        response = client_db.get_item(
+            TableName=os.environ['USERS_TABLE'],
+            Key={
+                'username': {'S': username}
+            }
+        )
+
+        if 'Item' not in response:
+            return generate_response(400, {
+                "success": False,
+                "message": "This user does not exist"
+            })
+
         client_db.put_item(
             TableName=os.environ['FRIEND_REQUESTS_TABLE'],
             Item={

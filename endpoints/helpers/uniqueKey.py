@@ -1,5 +1,8 @@
 from time import time
 import random
+import string
+
+client_db = boto3.client('dynamodb')
 
 
 class hashable_object:
@@ -12,6 +15,25 @@ class hashable_object:
         return hash((self.timestamp, self.random_num, self.name))
 
 
-def unique_key(user):
+def unique_key(user, table, key_name):
     hash_obj = hashable_object(user)
-    return hash(hash_obj)
+    return check_unique(hash(hash_obj), table, key_name)
+
+
+def randomword():
+    s = string.lowercase+string.digits
+    return ''.join(random.sample(s, 10))
+
+
+def check_unique(key, table, key_name):
+    resp = client_db.get_item(
+        TableName=table,
+        Key={
+            key_name: {'S': f"{key}"}
+        }
+    )
+
+    if resp is None:
+        return key
+    else:
+        return unique_key(randomword(), table, key_name)

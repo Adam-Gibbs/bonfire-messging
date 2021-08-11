@@ -172,7 +172,7 @@ functions:
 
 
   sendMessage:
-    handler: endpoints/message/sendMessage.lambda_handler
+    handler: endpoints/chat/sendMessage.lambda_handler
     events:
       - http:
           path: /message
@@ -183,7 +183,7 @@ functions:
               Ref: ApiGatewayAuthorizer
 
   checkMessages:
-    handler: endpoints/message/checkMessages.lambda_handler
+    handler: endpoints/chat/checkMessages.lambda_handler
     events:
       - http:
           path: /message
@@ -195,10 +195,10 @@ functions:
 
 
   getFires:
-    handler: endpoints/fire/new.lambda_handler
+    handler: endpoints/fire/newFire.lambda_handler
     events:
       - http:
-          path: /fire
+          path: /fire/new
           method: post
           authorizer:
             type: COGNITO_USER_POOLS
@@ -206,7 +206,7 @@ functions:
               Ref: ApiGatewayAuthorizer
 
   checkFires:
-    handler: endpoints/fire/get.lambda_handler
+    handler: endpoints/fire/getFires.lambda_handler
     events:
       - http:
           path: /fire/nearby

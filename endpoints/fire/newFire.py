@@ -91,12 +91,15 @@ def lambda_handler(event, context):
         return invalid_recipients
 
     try:
-        fire_id = str(unique_key(current_user))
+        fire_id = str(
+            unique_key(current_user, os.environ['FIRES_TABLE'], 'fireId')
+        )
         location_name = get_location_name(location['lat'], location['long'])
         client_db.put_item(
             TableName=os.environ['FIRES_TABLE'],
             Item={
                 'fireId': {'S': fire_id},
+                'creator': {'S': current_user},
                 'lat': {'S': str(location["lat"])},
                 'long': {'S': str(location["long"])},
                 'location': {'S': location_name},

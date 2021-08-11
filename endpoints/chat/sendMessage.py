@@ -38,10 +38,15 @@ def lambda_handler(event, context):
                 "message": f"You are not friends with {recipient}"
             })
 
+        unique = unique_key(
+            current_user,
+            os.environ['MESSAGES_TABLE'],
+            'messageId'
+        )
         client_db.put_item(
             TableName=os.environ['MESSAGES_TABLE'],
             Item={
-                'messageId': {'S': str(unique_key(current_user))},
+                'messageId': {'S': str(unique)},
                 'recipient': {'S': recipient},
                 'replyId': {'S': str(reply_id)},
                 'message': {'S': message},
