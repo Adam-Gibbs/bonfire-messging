@@ -49,7 +49,7 @@ def lambda_handler(event, context):
         current_user = get_username(event)
         client_db = boto3.client('dynamodb')
 
-        public_fires = []
+        near_public_fires = []
         if public is not False:
             public_fires = client_db.query(
                 TableName=os.environ['FIRES_TABLE'],
@@ -70,7 +70,7 @@ def lambda_handler(event, context):
                     if (
                         distance.distance(location, point_location).km
                             <= distance_km):
-                        public_fires.append(item)
+                        near_public_fires.append(item)
 
         invited_fires = []
         if public is not True:
@@ -96,7 +96,7 @@ def lambda_handler(event, context):
 
         return generate_response(200, {
             "success": True,
-            "public": public_fires,
+            "public": near_public_fires,
             "invited": invited_fires,
         })
 
