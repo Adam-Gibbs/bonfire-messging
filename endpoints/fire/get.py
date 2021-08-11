@@ -115,8 +115,8 @@ def lambda_handler(event, context):
 
         return generate_response(200, {
             "success": True,
-            "public": near_public_fires,
-            "invited": invited_fires,
+            "public": near_public_fires or [],
+            "invited": invited_fires or [],
         })
 
     except Exception as e:
