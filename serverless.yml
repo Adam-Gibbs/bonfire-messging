@@ -10,8 +10,8 @@ plugins:
 custom:
   functionPrefix: 'ping-messaging-${self:provider.stage}'
   usersTable: '${self:custom.functionPrefix}.users.v0.3'
-  chatsTable: '${self:custom.functionPrefix}.chats.v0.6'
-  messagesTable: '${self:custom.functionPrefix}.v0.5'
+  chatsTable: '${self:custom.functionPrefix}.chats.v0.7'
+  messagesTable: '${self:custom.functionPrefix}.messages.v0.5'
   chatMembersTable: '${self:custom.functionPrefix}.chatMembers.v0.6'
   mediaTable: '${self:custom.functionPrefix}.media'
   friendRequestsTable: '${self:custom.functionPrefix}.friendRequests.v0.3'
