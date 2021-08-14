@@ -406,6 +406,18 @@ resources:
         AttributeDefinitions:
           - AttributeName: messageId
             AttributeType: S
+          - AttributeName: chatId
+            AttributeType: S
+        GlobalSecondaryIndexes:
+          - IndexName: chatId-index
+            KeySchema:
+              - AttributeName: chatId
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+            ProvisionedThroughput:
+              ReadCapacityUnits: 5
+              WriteCapacityUnits: 5
         KeySchema:
           - AttributeName: messageId
             KeyType: HASH
