@@ -39,7 +39,7 @@ def lambda_handler(event, context):
                 "message": "You are not in that chat"
             })
 
-        if recipient not in chat_has_user(chat_id, recipient):
+        if not chat_has_user(chat_id, recipient):
             return generate_response(400, {
                 "success": False,
                 "message": f"{recipient} is not a member of that chat"
