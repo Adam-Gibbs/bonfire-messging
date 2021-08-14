@@ -38,16 +38,16 @@ def lambda_handler(event, context):
         resp = client_db.query(
             TableName=os.environ['MESSAGES_TABLE'],
             IndexName='chatId-index',
-            KeyConditionExpression='chatId = :chat_id',
+            KeyConditionExpression='chatId = :chat_id AND time > :time',
             ExpressionAttributeValues={
-                ':chat_id': {'S': chat_id}
+                ':chat_id': {'S': chat_id},
+                ':time': {'S': time}
             }
         )
 
+        resp_items = []
         if 'Items' in resp:
             resp_items = resp.get("Items")
-        else:
-            resp_items = []
 
         return generate_response(200, {
             "messages": resp_items,

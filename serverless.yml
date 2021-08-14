@@ -175,7 +175,7 @@ functions:
     handler: chat/sendMessage.lambda_handler
     events:
       - http:
-          path: /message/send
+          path: /chat/send
           method: post
           authorizer:
             type: COGNITO_USER_POOLS
@@ -186,7 +186,7 @@ functions:
     handler: chat/checkMessages.lambda_handler
     events:
       - http:
-          path: /message/retrieve
+          path: /chat/retrieve
           method: post
           authorizer:
             type: COGNITO_USER_POOLS
@@ -408,11 +408,15 @@ resources:
             AttributeType: S
           - AttributeName: chatId
             AttributeType: S
+          - AttributeName: time
+            AttributeType: S
         GlobalSecondaryIndexes:
           - IndexName: chatId-index
             KeySchema:
               - AttributeName: chatId
                 KeyType: HASH
+              - AttributeName: sent
+                KeyType: RANGE
             Projection:
               ProjectionType: ALL
             ProvisionedThroughput:
