@@ -41,7 +41,7 @@ def lambda_handler(event, context):
             KeyConditionExpression='chatId = :chat_id AND time > :time',
             ExpressionAttributeValues={
                 ':chat_id': {'S': chat_id},
-                ':time': {'S': time}
+                ':time': {'S': str(time)}
             }
         )
 
