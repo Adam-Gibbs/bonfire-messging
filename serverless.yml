@@ -11,7 +11,7 @@ custom:
   functionPrefix: 'ping-messaging-${self:provider.stage}'
   usersTable: '${self:custom.functionPrefix}.users.v0.3'
   chatsTable: '${self:custom.functionPrefix}.chats'
-  messagesTable: '${self:custom.functionPrefix}.v0.4'
+  messagesTable: '${self:custom.functionPrefix}.v0.5'
   chatMembersTable: '${self:custom.functionPrefix}.chatMembers'
   mediaTable: '${self:custom.functionPrefix}.media'
   friendRequestsTable: '${self:custom.functionPrefix}.friendRequests.v0.3'
@@ -175,7 +175,7 @@ functions:
     handler: chat/sendMessage.lambda_handler
     events:
       - http:
-          path: /message
+          path: /message/send
           method: post
           authorizer:
             type: COGNITO_USER_POOLS
@@ -186,7 +186,19 @@ functions:
     handler: chat/checkMessages.lambda_handler
     events:
       - http:
-          path: /message
+          path: /message/retrieve
+          method: post
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+
+
+  getChats:
+    handler: chat/getChats.lambda_handler
+    events:
+      - http:
+          path: /chat
           method: get
           authorizer:
             type: COGNITO_USER_POOLS
@@ -194,7 +206,7 @@ functions:
               Ref: ApiGatewayAuthorizer
 
 
-  getFires:
+  newFire:
     handler: fire/newFire.lambda_handler
     events:
       - http:
@@ -216,6 +228,16 @@ functions:
             authorizerId:
               Ref: ApiGatewayAuthorizer
 
+  respondToFire:
+    handler: fire/respondToFire.lambda_handler
+    events:
+      - http:
+          path: /fire/respond
+          method: post
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
 
 
 resources:
@@ -384,12 +406,12 @@ resources:
         AttributeDefinitions:
           - AttributeName: messageId
             AttributeType: S
-          - AttributeName: recipient
+          - AttributeName: chatId
             AttributeType: S
         GlobalSecondaryIndexes:
-          - IndexName: recipient-index
+          - IndexName: chatId-index
             KeySchema:
-              - AttributeName: recipient
+              - AttributeName: chatId
                 KeyType: HASH
             Projection:
               ProjectionType: ALL

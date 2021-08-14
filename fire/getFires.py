@@ -3,8 +3,7 @@ import os
 import boto3
 from geopy import distance
 from exceptions import handle_exception
-from helpers.getRequestData import check_fields, get_body, \
-                                             validate_dict
+from helpers.getRequestData import check_fields, get_body, validate_dict
 from user_methods.getUsername import get_username
 from helpers.returns import generate_response
 
@@ -100,9 +99,6 @@ def lambda_handler(event, context):
         })
 
     try:
-        current_user = get_username(event)
-        client_db = boto3.client('dynamodb')
-
         near_public_fires = []
         if public is not False:
             near_public_fires = get_nearby_public_fires(

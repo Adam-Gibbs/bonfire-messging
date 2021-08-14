@@ -6,7 +6,7 @@ from helpers.uniqueKey import unique_key
 from chat_methods.addChatUser import add_chat_user
 
 
-def create_chat(user, fire_id, user_2=None):
+def create_chat(user, fire_id, name, user_2=None):
     client_db = boto3.client('dynamodb')
 
     unique = str(unique_key(
@@ -21,7 +21,8 @@ def create_chat(user, fire_id, user_2=None):
             'chatId': {'S': unique},
             'fireId': {'S': str(fire_id)},
             'created': {'S': str(time.time())},
-            'createdBy': {'S': user}
+            'createdBy': {'S': user},
+            'name': {'S': name}
         }
     )
 

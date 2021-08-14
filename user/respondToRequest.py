@@ -56,7 +56,8 @@ def lambda_handler(event, context):
             }
         )
 
-        create_chat(current_user, None, other_user)
+        name = f"{current_user} and {other_user}'s private chat"
+        create_chat(current_user, None, name, other_user)
 
         return generate_response(200, {
             "success": True

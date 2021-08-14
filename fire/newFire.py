@@ -95,7 +95,7 @@ def lambda_handler(event, context):
             unique_key(current_user, os.environ['FIRES_TABLE'], 'fireId')
         )
         location_name = get_location_name(location['lat'], location['long'])
-        chat_id = create_chat(current_user, fire_id)
+        chat_id = create_chat(current_user, fire_id, "")
 
         client_db.put_item(
             TableName=os.environ['FIRES_TABLE'],
