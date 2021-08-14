@@ -33,6 +33,12 @@ def lambda_handler(event, context):
         reply_id = params["replyId"]
 
     try:
+        if recipient == current_user:
+            return generate_response(400, {
+                "success": False,
+                "message": "You can not send a chat to yourself"
+            })
+
         if chat_id not in get_all_chat_ids(current_user):
             return generate_response(400, {
                 "success": False,
