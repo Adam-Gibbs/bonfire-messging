@@ -61,6 +61,7 @@ def lambda_handler(event, context):
             Item={
                 'messageId': {'S': str(unique)},
                 'chatId': {'S': chat_id},
+                'sender': {'S': current_user},
                 'recipient': {'S': recipient},
                 'replyId': {'S': str(reply_id)},
                 'message': {'S': message},
