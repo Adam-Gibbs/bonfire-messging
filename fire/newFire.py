@@ -17,7 +17,7 @@ def get_location_name(lat, long):
     location_name = geo.reverse(f"{lat}, {long}")
     if location_name is None:
         return 'Unknown, Unknown'
-    location_name = location_name.address.split(",")
+    location_name = location_name.address.split(", ")
 
     if len(location_name) == 1:
         return f'Unknown, {location_name[0]}'
