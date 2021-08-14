@@ -107,7 +107,7 @@ def lambda_handler(event, context):
                 'location': {'S': location_name},
                 'publicFire': {'S': str(public)},
                 'message': {'S': message},
-                'time': {'S': str(time.time())},
+                'created': {'S': str(time.time())},
                 'chatId': {'S': chat_id}
             }
         )

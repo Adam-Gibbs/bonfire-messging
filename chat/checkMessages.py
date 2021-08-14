@@ -38,7 +38,7 @@ def lambda_handler(event, context):
         resp = client_db.query(
             TableName=os.environ['MESSAGES_TABLE'],
             IndexName='chatId-sent-index',
-            KeyConditionExpression='chatId = :chat_id AND time > :sent',
+            KeyConditionExpression='chatId = :chat_id AND sent > :sent',
             ExpressionAttributeValues={
                 ':chat_id': {'S': chat_id},
                 ':sent': {'S': str(time)}
