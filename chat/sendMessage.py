@@ -64,7 +64,7 @@ def lambda_handler(event, context):
                 'recipient': {'S': recipient},
                 'replyId': {'S': str(reply_id)},
                 'message': {'S': message},
-                'time': {'S': str(time.time())}
+                'sent': {'S': str(time.time())}
             }
         )
 
