@@ -18,8 +18,8 @@ def get_chats(user):
 
     resp = client_db.query(
         TableName=os.environ['CHAT_MEMBERS_TABLE'],
-        IndexName='member-index',
-        KeyConditionExpression='member = :user',
+        IndexName='chatMember-index',
+        KeyConditionExpression='chatMember = :user',
         ExpressionAttributeValues={
             ':user': {'S': user}
         }

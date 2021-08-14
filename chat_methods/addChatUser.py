@@ -11,6 +11,6 @@ def add_chat_user(user, chat_id):
         Item={
             'chatMemberId': {'S': user+chat_id},
             'chatId': {'S': chat_id},
-            'member': {'S': user},
+            'chatMember': {'S': user},
         }
     )

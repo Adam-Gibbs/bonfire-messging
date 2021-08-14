@@ -10,9 +10,9 @@ plugins:
 custom:
   functionPrefix: 'ping-messaging-${self:provider.stage}'
   usersTable: '${self:custom.functionPrefix}.users.v0.3'
-  chatsTable: '${self:custom.functionPrefix}.chats'
+  chatsTable: '${self:custom.functionPrefix}.chats.v0.6'
   messagesTable: '${self:custom.functionPrefix}.v0.5'
-  chatMembersTable: '${self:custom.functionPrefix}.chatMembers'
+  chatMembersTable: '${self:custom.functionPrefix}.chatMembers.v0.6'
   mediaTable: '${self:custom.functionPrefix}.media'
   friendRequestsTable: '${self:custom.functionPrefix}.friendRequests.v0.3'
   friendsTable: '${self:custom.functionPrefix}.friends'
@@ -436,12 +436,12 @@ resources:
         AttributeDefinitions:
           - AttributeName: chatMemberId
             AttributeType: S
-          - AttributeName: member
+          - AttributeName: chatMember
             AttributeType: S
         GlobalSecondaryIndexes:
-          - IndexName: member-index
+          - IndexName: chatMember-index
             KeySchema:
-              - AttributeName: member
+              - AttributeName: chatMember
                 KeyType: HASH
             Projection:
               ProjectionType: ALL
