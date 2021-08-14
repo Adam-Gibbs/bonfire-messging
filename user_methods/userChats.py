@@ -4,16 +4,6 @@ import boto3
 
 
 def get_all_chat_ids(user):
-    chats = get_chats(user)
-    total = []
-
-    for item in chats:
-        total.append(item.get("chatId").get("S"))
-
-    return total
-
-
-def get_chats(user):
     client_db = boto3.client('dynamodb')
 
     resp = client_db.query(
@@ -25,18 +15,34 @@ def get_chats(user):
         }
     )
 
-    chats = []
+    total = []
     if 'Items' in resp:
-        chats = resp.get("Items")
+        for item in resp.get("Items"):
+            total.append(item.get("chatId").get("S"))
 
-    return chats
+    return total
+
+
+def get_chats(user):
+    client_db = boto3.client('dynamodb')
+
+    chats = get_all_chat_ids(user)
+
+    total = []
+    for chat_id in chats:
+        resp = client_db.query(
+            TableName=os.environ['CHATS_TABLE'],
+            KeyConditionExpression='chatId = :user',
+            ExpressionAttributeValues={
+                ':user': {'S': chat_id}
+            }
+        )
+
+        total.append(resp)
+
+    return total
 
 
 def chat_has_user(chat_id, user):
-    chats = get_chats(user)
-    total = []
-
-    for item in chats:
-        total.append(item.get("chatId").get("S"))
-
-    return chat_id in total
+    chats = get_all_chat_ids(user)
+    return chat_id in chats
