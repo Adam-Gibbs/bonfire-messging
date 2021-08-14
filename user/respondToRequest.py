@@ -38,8 +38,9 @@ def lambda_handler(event, context):
                     "message": "This friend request does not exist"
                 })
 
-            if current_user is not response.get('Item') \
-                    .get("requestTo").get("S"):
+            print(f'current user: {current_user}, request to: {response["Item"]["requestTo"]["S"]}')
+            if current_user is not response["Item"]["requestTo"]["S"]:
+                print("does not apply to you")
                 return generate_response(400, {
                     "success": False,
                     "message": "This friend request does not apply to you"
