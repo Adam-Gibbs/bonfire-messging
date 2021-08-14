@@ -228,7 +228,7 @@ functions:
             authorizerId:
               Ref: ApiGatewayAuthorizer
 
-  respondToFire:
+  respondToFireInvite:
     handler: fire/respondToFireInvite.lambda_handler
     events:
       - http:
@@ -239,7 +239,7 @@ functions:
             authorizerId:
               Ref: ApiGatewayAuthorizer
 
-  respondToFire:
+  respondToFirePublic:
     handler: fire/respondToFirePublic.lambda_handler
     events:
       - http:
