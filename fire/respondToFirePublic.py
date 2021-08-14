@@ -20,7 +20,7 @@ def lambda_handler(event, context):
     if invalid_fields is not None:
         return invalid_fields
 
-    fire_id = params['fireId']
+    fire_id = str(params['fireId'])
     accepted = params['accepted']
 
     try:
