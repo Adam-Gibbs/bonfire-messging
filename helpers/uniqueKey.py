@@ -22,8 +22,7 @@ def unique_key(user, table, key_name):
 
 
 def randomword():
-    s = string.lowercase+string.digits
-    return ''.join(random.sample(s, 10))
+    return ''.join(random.choice(string.ascii_letters) for _ in range(10))
 
 
 def check_unique(key, table, key_name):
