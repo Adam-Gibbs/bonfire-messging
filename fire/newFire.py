@@ -37,11 +37,17 @@ def check_recipients(public, recipients, user):
                            "not specify any recipients"
             })
 
-    elif public and len(recipients) > 0:
+    if public and len(recipients) > 0:
         return generate_response(400, {
                 "success": False,
                 "message": "Your public chat can "
                            "not specify any recipients"
+            })
+
+    if public and user in recipients:
+        return generate_response(400, {
+                "success": False,
+                "message": "Your recipients can not include yourself"
             })
 
     friends = check_friends(user)
