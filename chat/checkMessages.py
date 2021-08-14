@@ -1,9 +1,9 @@
 import os
 
 import boto3
-from endpoints.auth.authExceptions import handle_auth_exception
-from endpoints.helpers.returns import generate_response
-from endpoints.user_methods.getUsername import get_username
+from auth.authExceptions import handle_auth_exception
+from helpers.returns import generate_response
+from user_methods.getUsername import get_username
 
 
 def lambda_handler(event, context):

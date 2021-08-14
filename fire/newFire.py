@@ -2,14 +2,14 @@ import os
 import time
 
 import boto3
+from chat_methods.createChat import create_chat
+from exceptions import handle_exception
 from geopy.geocoders import Nominatim
-from endpoints.exceptions import handle_exception
-from endpoints.helpers.getRequestData import check_fields, get_body, \
-                                             validate_dict
-from endpoints.helpers.returns import generate_response
-from endpoints.helpers.uniqueKey import unique_key
-from endpoints.user_methods.checkFriends import check_friends
-from endpoints.user_methods.getUsername import get_username
+from helpers.getRequestData import check_fields, get_body, validate_dict
+from helpers.returns import generate_response
+from helpers.uniqueKey import unique_key
+from user_methods.checkFriends import check_friends
+from user_methods.getUsername import get_username
 
 
 def get_location_name(lat, long):
@@ -95,6 +95,8 @@ def lambda_handler(event, context):
             unique_key(current_user, os.environ['FIRES_TABLE'], 'fireId')
         )
         location_name = get_location_name(location['lat'], location['long'])
+        chat_id = create_chat(current_user, fire_id)
+
         client_db.put_item(
             TableName=os.environ['FIRES_TABLE'],
             Item={
@@ -105,7 +107,8 @@ def lambda_handler(event, context):
                 'location': {'S': location_name},
                 'publicFire': {'S': str(public)},
                 'message': {'S': message},
-                'time': {'S': str(time.time())}
+                'time': {'S': str(time.time())},
+                'chatId': {'S': chat_id}
             }
         )
 

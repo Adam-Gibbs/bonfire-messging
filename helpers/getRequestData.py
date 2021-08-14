@@ -1,6 +1,6 @@
 import json
 
-from endpoints.helpers.returns import generate_response
+from helpers.returns import generate_response
 
 
 def get_body(event):

@@ -1,6 +1,6 @@
 import boto3
 
-import endpoints.helpers.config as config
+import helpers.config as config
 
 
 def get_email(username):

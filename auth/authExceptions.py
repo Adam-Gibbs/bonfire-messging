@@ -1,5 +1,5 @@
-from endpoints.helpers.returns import generate_response
-import endpoints.exceptions
+from helpers.returns import generate_response
+import exceptions
 
 
 def handle_auth_exception(exception):
@@ -35,4 +35,4 @@ def handle_auth_exception(exception):
         })
 
     else:
-        return endpoints.exceptions.handle_exception(exception)
+        return exceptions.handle_exception(exception)

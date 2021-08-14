@@ -2,12 +2,12 @@ import os
 import time
 
 import boto3
-from endpoints.exceptions import handle_exception
-from endpoints.helpers.getRequestData import check_fields, get_body
-from endpoints.helpers.returns import generate_response
-from endpoints.helpers.uniqueKey import unique_key
-from endpoints.user_methods.checkFriends import check_friends
-from endpoints.user_methods.getUsername import get_username
+from exceptions import handle_exception
+from helpers.getRequestData import check_fields, get_body
+from helpers.returns import generate_response
+from helpers.uniqueKey import unique_key
+from user_methods.checkFriends import check_friends
+from user_methods.getUsername import get_username
 
 
 def lambda_handler(event, context):

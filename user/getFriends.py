@@ -1,7 +1,7 @@
-from endpoints.user_methods.checkFriends import check_friends
-from endpoints.exceptions import handle_exception
-from endpoints.helpers.returns import generate_response
-from endpoints.user_methods.getUsername import get_username
+from user_methods.checkFriends import check_friends
+from exceptions import handle_exception
+from helpers.returns import generate_response
+from user_methods.getUsername import get_username
 
 
 def lambda_handler(event, context):

@@ -2,11 +2,11 @@ import os
 
 import boto3
 from geopy import distance
-from endpoints.exceptions import handle_exception
-from endpoints.helpers.getRequestData import check_fields, get_body, \
+from exceptions import handle_exception
+from helpers.getRequestData import check_fields, get_body, \
                                              validate_dict
-from endpoints.user_methods.getUsername import get_username
-from endpoints.helpers.returns import generate_response
+from user_methods.getUsername import get_username
+from helpers.returns import generate_response
 
 
 def get_nearby_public_fires(user_location, user_distance, client_db):

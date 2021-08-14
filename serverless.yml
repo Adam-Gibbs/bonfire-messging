@@ -39,8 +39,8 @@ package:
     - LICENSE.txt
     - '**/*'
   include:
-    - 'endpoints/*/*.py'
-    - 'endpoints/*.py'
+    - './*/*.py'
+    - '*.py'
 
 # Need to be more specific here with actions and resources
 provider:
@@ -72,43 +72,43 @@ provider:
 
 functions:
   login:
-    handler: endpoints/auth/login.lambda_handler
+    handler: auth/login.lambda_handler
     events:
       - http:
           path: /auth/login
           method: post
   refresh_auth:
-    handler: endpoints/auth/refreshAuth.lambda_handler
+    handler: auth/refreshAuth.lambda_handler
     events:
       - http:
           path: /auth/refresh
           method: post
   signup:
-    handler: endpoints/auth/signup.lambda_handler
+    handler: auth/signup.lambda_handler
     events:
       - http:
           path: /auth/signup
           method: post
   confirm_signup:
-    handler: endpoints/auth/confirmSignup.lambda_handler
+    handler: auth/confirmSignup.lambda_handler
     events:
       - http:
           path: /auth/signup/confirm
           method: post
   resend_code:
-    handler: endpoints/auth/resendCode.lambda_handler
+    handler: auth/resendCode.lambda_handler
     events:
       - http:
           path: /auth/resendCode
           method: post
   forgot_password:
-    handler: endpoints/auth/forgotPassword.lambda_handler
+    handler: auth/forgotPassword.lambda_handler
     events:
       - http:
           path: /auth/forgotPassword
           method: post
   confirm_forgot_password:
-    handler: endpoints/auth/confirmForgotPassword.lambda_handler
+    handler: auth/confirmForgotPassword.lambda_handler
     events:
       - http:
           path: /auth/forgotPassword/confirm
@@ -116,7 +116,7 @@ functions:
 
 
   getInfo:
-    handler: endpoints/user/getUserInfo.lambda_handler
+    handler: user/getUserInfo.lambda_handler
     events:
       - http:
           path: /user/getInfo
@@ -127,7 +127,7 @@ functions:
               Ref: ApiGatewayAuthorizer
 
   getFriendRequests:
-    handler: endpoints/user/getFriendRequests.lambda_handler
+    handler: user/getFriendRequests.lambda_handler
     events:
       - http:
           path: /user/friendRequests
@@ -138,7 +138,7 @@ functions:
               Ref: ApiGatewayAuthorizer
 
   sendFriendRequest:
-    handler: endpoints/user/sendFriendRequest.lambda_handler
+    handler: user/sendFriendRequest.lambda_handler
     events:
       - http:
           path: /user/friendRequests
@@ -149,7 +149,7 @@ functions:
               Ref: ApiGatewayAuthorizer
 
   respondToFriendRequest:
-    handler: endpoints/user/respondToRequest.lambda_handler
+    handler: user/respondToRequest.lambda_handler
     events:
       - http:
           path: /user/respondToRequest
@@ -160,7 +160,7 @@ functions:
               Ref: ApiGatewayAuthorizer
 
   getFriends:
-    handler: endpoints/user/getFriends.lambda_handler
+    handler: user/getFriends.lambda_handler
     events:
       - http:
           path: /user/friends
@@ -172,7 +172,7 @@ functions:
 
 
   sendMessage:
-    handler: endpoints/chat/sendMessage.lambda_handler
+    handler: chat/sendMessage.lambda_handler
     events:
       - http:
           path: /message
@@ -183,7 +183,7 @@ functions:
               Ref: ApiGatewayAuthorizer
 
   checkMessages:
-    handler: endpoints/chat/checkMessages.lambda_handler
+    handler: chat/checkMessages.lambda_handler
     events:
       - http:
           path: /message
@@ -195,7 +195,7 @@ functions:
 
 
   getFires:
-    handler: endpoints/fire/newFire.lambda_handler
+    handler: fire/newFire.lambda_handler
     events:
       - http:
           path: /fire/new
@@ -206,7 +206,7 @@ functions:
               Ref: ApiGatewayAuthorizer
 
   checkFires:
-    handler: endpoints/fire/getFires.lambda_handler
+    handler: fire/getFires.lambda_handler
     events:
       - http:
           path: /fire/nearby
@@ -410,6 +410,18 @@ resources:
         AttributeDefinitions:
           - AttributeName: chatMemberId
             AttributeType: S
+          - AttributeName: member
+            AttributeType: S
+        GlobalSecondaryIndexes:
+          - IndexName: member-index
+            KeySchema:
+              - AttributeName: member
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+            ProvisionedThroughput:
+              ReadCapacityUnits: 5
+              WriteCapacityUnits: 5
         KeySchema:
           - AttributeName: chatMemberId
             KeyType: HASH

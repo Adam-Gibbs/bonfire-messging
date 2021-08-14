@@ -1,9 +1,9 @@
 import boto3
 
-from endpoints.helpers.returns import generate_response
-from endpoints.helpers.getRequestData import get_body, check_fields
-import endpoints.helpers.config as config
-import authExceptions
+from helpers.returns import generate_response
+from helpers.getRequestData import get_body, check_fields
+import helpers.config as config
+from auth.authExceptions import handle_auth_exception
 
 
 def lambda_handler(event, context):
@@ -38,7 +38,7 @@ def lambda_handler(event, context):
         })
 
     except Exception as e:
-        return authExceptions.handle_auth_exception(e)
+        return handle_auth_exception(e)
 
     return generate_response(200, {
         "success": True,

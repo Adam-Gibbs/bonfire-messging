@@ -1,4 +1,4 @@
-from endpoints.helpers.returns import generate_response
+from helpers.returns import generate_response
 
 
 def handle_exception(exception):

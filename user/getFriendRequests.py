@@ -1,10 +1,10 @@
 import os
 
 import boto3
-import endpoints.helpers.config as config
-from endpoints.exceptions import handle_exception
-from endpoints.helpers.returns import generate_response
-from endpoints.user_methods.getUsername import get_username
+import helpers.config as config
+from exceptions import handle_exception
+from helpers.returns import generate_response
+from user_methods.getUsername import get_username
 
 
 def lambda_handler(event, context):

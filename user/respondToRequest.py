@@ -1,7 +1,8 @@
-from endpoints.helpers.getRequestData import get_body, check_fields
-from endpoints.user_methods.getUsername import get_username
-from endpoints.helpers.returns import generate_response
-from endpoints.exceptions import handle_exception
+from helpers.getRequestData import get_body, check_fields
+from user_methods.getUsername import get_username
+from chat_methods.createChat import create_chat
+from helpers.returns import generate_response
+from exceptions import handle_exception
 import boto3
 import os
 
@@ -54,6 +55,8 @@ def lambda_handler(event, context):
                 'friendRequestId': {'S': friend_request_id}
             }
         )
+
+        create_chat(current_user, None, other_user)
 
         return generate_response(200, {
             "success": True

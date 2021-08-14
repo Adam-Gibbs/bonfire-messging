@@ -1,7 +1,7 @@
-from endpoints.user_methods.getUsername import get_username
-from endpoints.user_methods.getEmail import get_email
-from endpoints.helpers.returns import generate_response
-from endpoints.auth.authExceptions import handle_auth_exception
+from user_methods.getUsername import get_username
+from user_methods.getEmail import get_email
+from helpers.returns import generate_response
+from auth.authExceptions import handle_auth_exception
 
 
 def lambda_handler(event, context):

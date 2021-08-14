@@ -1,5 +1,5 @@
-from endpoints.helpers.getRequestData import get_header_auth
-from endpoints.user_methods.decode import decode_token
+from helpers.getRequestData import get_header_auth
+from user_methods.decode import decode_token
 
 
 def get_username(event):
