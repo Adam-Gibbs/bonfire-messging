@@ -42,8 +42,3 @@ def get_chats(user):
             total.extend(resp.get("Items"))
 
     return total
-
-
-def chat_has_user(chat_id, user):
-    chats = get_all_chat_ids(user)
-    return chat_id in chats

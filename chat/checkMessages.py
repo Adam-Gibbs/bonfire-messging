@@ -1,18 +1,15 @@
-import os
-
-import boto3
 from auth.authExceptions import handle_auth_exception
 from helpers.getRequestData import check_fields, get_body
 from helpers.returns import generate_response
 from user_methods.getUsername import get_username
 from user_methods.userChats import get_all_chat_ids
+from chat_methods.getAllMessages import get_all_messages
 
 
 def lambda_handler(event, context):
     try:
         params = get_body(event)
         current_user = get_username(event)
-        client_db = boto3.client('dynamodb')
 
         invalid_fields = check_fields(
             ["chat"],
@@ -35,22 +32,9 @@ def lambda_handler(event, context):
                 "message": "You are not in that chat"
             })
 
-        resp = client_db.query(
-            TableName=os.environ['MESSAGES_TABLE'],
-            IndexName='chatId-sent-index',
-            KeyConditionExpression='chatId = :chat_id AND sent > :sent',
-            ExpressionAttributeValues={
-                ':chat_id': {'S': chat_id},
-                ':sent': {'S': str(time)}
-            }
-        )
-
-        resp_items = []
-        if 'Items' in resp:
-            resp_items = resp.get("Items")
-
+        messages = get_all_messages(chat_id, time)
         return generate_response(200, {
-            "messages": resp_items,
+            "messages": messages,
         })
 
     except Exception as e:

@@ -7,7 +7,8 @@ from helpers.getRequestData import check_fields, get_body
 from helpers.returns import generate_response
 from helpers.uniqueKey import unique_key
 from user_methods.getUsername import get_username
-from user_methods.userChats import get_all_chat_ids, chat_has_user
+from user_methods.userChats import get_all_chat_ids
+from chat_methods.checkReply import check_reply_id_in_chat
 
 
 def lambda_handler(event, context):
@@ -16,8 +17,8 @@ def lambda_handler(event, context):
     client_db = boto3.client('dynamodb')
 
     invalid_fields = check_fields(
-        ["chat", "recipient", "message"],
-        [int, str, str],
+        ["chat", "message"],
+        [int, str],
         event,
         ["replyId"],
         [int]
@@ -26,29 +27,22 @@ def lambda_handler(event, context):
         return invalid_fields
 
     chat_id = str(params['chat'])
-    recipient = params['recipient']
     message = params['message']
     reply_id = ""
     if "replyId" in params:
         reply_id = params["replyId"]
 
     try:
-        if recipient == current_user:
-            return generate_response(400, {
-                "success": False,
-                "message": "You can not send a chat to yourself"
-            })
-
         if chat_id not in get_all_chat_ids(current_user):
             return generate_response(400, {
                 "success": False,
                 "message": "You are not in that chat"
             })
 
-        if not chat_has_user(chat_id, recipient):
+        if reply_id != "" and not check_reply_id_in_chat(chat_id, reply_id):
             return generate_response(400, {
                 "success": False,
-                "message": f"{recipient} is not a member of that chat"
+                "message": "You can not reply to a message not in the chat"
             })
 
         unique = unique_key(
@@ -62,7 +56,6 @@ def lambda_handler(event, context):
                 'messageId': {'S': str(unique)},
                 'chatId': {'S': chat_id},
                 'sender': {'S': current_user},
-                'recipient': {'S': recipient},
                 'replyId': {'S': str(reply_id)},
                 'message': {'S': message},
                 'sent': {'S': str(time.time())}
