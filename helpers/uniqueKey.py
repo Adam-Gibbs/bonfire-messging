@@ -1,5 +1,6 @@
 from time import time
 import random
+import boto3
 import string
 
 client_db = boto3.client('dynamodb')
