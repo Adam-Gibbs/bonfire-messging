@@ -1,14 +1,14 @@
 # serverless.yml
 org: adamgibbs
-app: ping-messaging
-service: ping-messaging
+app: bonfire-messaging
+service: bonfire-messaging
 
 plugins:
   - serverless-python-requirements
   - serverless-dynamodb-local
 
 custom:
-  functionPrefix: 'ping-messaging-${self:provider.stage}'
+  functionPrefix: 'bonfire-messaging-${self:provider.stage}'
   usersTable: '${self:custom.functionPrefix}.users.v0.3'
   chatsTable: '${self:custom.functionPrefix}.chats.v0.7'
   messagesTable: '${self:custom.functionPrefix}.messages.v0.5'
@@ -18,7 +18,7 @@ custom:
   friendsTable: '${self:custom.functionPrefix}.friends'
   firesTable: '${self:custom.functionPrefix}.fires.v0.4'
   recipientsTable: '${self:custom.functionPrefix}.recipients'
-  identityPool: 'pingMessaging${self:provider.stage}'
+  identityPool: 'bonfireMessaging${self:provider.stage}'
   pythonRequirements:
     slim: true
     pythonBin: python3
