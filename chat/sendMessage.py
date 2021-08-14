@@ -30,7 +30,7 @@ def lambda_handler(event, context):
     message = params['message']
     reply_id = ""
     if "replyId" in params:
-        reply_id = params["replyId"]
+        reply_id = str(params["replyId"])
 
     try:
         if chat_id not in get_all_chat_ids(current_user):
@@ -56,7 +56,7 @@ def lambda_handler(event, context):
                 'messageId': {'S': str(unique)},
                 'chatId': {'S': chat_id},
                 'sender': {'S': current_user},
-                'replyId': {'S': str(reply_id)},
+                'replyId': {'S': reply_id},
                 'message': {'S': message},
                 'sent': {'S': str(time.time())}
             }
