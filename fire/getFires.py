@@ -58,7 +58,7 @@ def get_invited_fires(user, client_db):
 
             if 'Item' in retrieved:
                 invite_fire = retrieved.get('Item')
-                invite_fire["recipientId"] = item["recipientId"]["S"]
+                invite_fire["recipientId"]["S"] = item["recipientId"]["S"]
                 invited_fires.append(invite_fire)
 
     return invited_fires
