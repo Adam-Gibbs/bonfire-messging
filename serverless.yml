@@ -229,15 +229,27 @@ functions:
               Ref: ApiGatewayAuthorizer
 
   respondToFire:
-    handler: fire/respondToFire.lambda_handler
+    handler: fire/respondToFireInvite.lambda_handler
     events:
       - http:
-          path: /fire/respond
+          path: /fire/invite/respond
           method: post
           authorizer:
             type: COGNITO_USER_POOLS
             authorizerId:
               Ref: ApiGatewayAuthorizer
+
+  respondToFire:
+    handler: fire/respondToFirePublic.lambda_handler
+    events:
+      - http:
+          path: /fire/public/respond
+          method: post
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId:
+              Ref: ApiGatewayAuthorizer
+
 
 
 resources:
