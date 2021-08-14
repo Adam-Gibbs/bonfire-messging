@@ -38,6 +38,13 @@ def lambda_handler(event, context):
                     "message": "This friend request does not exist"
                 })
 
+            if current_user is not response.get('Item') \
+                    .get("requestTo").get("S"):
+                return generate_response(400, {
+                    "success": False,
+                    "message": "This friend request does not apply to you"
+                })
+
             other_user = response.get('Item').get("requestFrom").get("S")
 
             client_db.put_item(
