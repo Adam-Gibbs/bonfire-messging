@@ -24,7 +24,7 @@ def lambda_handler(event, context):
         if invalid_fields is not None:
             return invalid_fields
 
-        chat_id = params['chat']
+        chat_id = str(params['chat'])
         time = 0
         if "time" in params:
             time = params["time"]
