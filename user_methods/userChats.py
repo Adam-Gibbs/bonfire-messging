@@ -39,7 +39,7 @@ def get_chats(user):
         )
 
         if 'Items' in resp:
-            total.append(resp.get("Items"))
+            total.extend(resp.get("Items"))
 
     return total
 
