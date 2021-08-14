@@ -33,7 +33,7 @@ def check_unique(key, table, key_name):
         }
     )
 
-    if resp is None:
-        return key
-    else:
+    if 'Item' in resp:
         return unique_key(randomword(), table, key_name)
+    else:
+        return key
