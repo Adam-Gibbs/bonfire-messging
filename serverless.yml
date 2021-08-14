@@ -410,18 +410,6 @@ resources:
             AttributeType: S
           - AttributeName: time
             AttributeType: S
-        GlobalSecondaryIndexes:
-          - IndexName: chatId-time-index
-            KeySchema:
-              - AttributeName: chatId
-                KeyType: HASH
-              - AttributeName: time
-                KeyType: RANGE
-            Projection:
-              ProjectionType: ALL
-            ProvisionedThroughput:
-              ReadCapacityUnits: 5
-              WriteCapacityUnits: 5
         KeySchema:
           - AttributeName: messageId
             KeyType: HASH
