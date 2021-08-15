@@ -12,10 +12,12 @@ def get_all_messages(chat_id, time):
         ExpressionAttributeValues={
             ':chat_id': {'S': chat_id},
             ':sent': {'S': str(time)}
-        }
+        },
+        Limit='2'
     )
 
     resp_items = []
+    print(resp)
     if 'Items' in resp:
         resp_items = resp.get("Items")
 
