@@ -275,10 +275,15 @@ resources:
             RequireUppercase: true
         UserPoolName: ${self:custom.functionPrefix}
         Schema:
+          - Name: preferred_username
+            AttributeDataType: String
+            DeveloperOnlyAttribute: false
+            Mutable: false
+            Required: true
           - Name: email
             AttributeDataType: String
             DeveloperOnlyAttribute: false
-            Mutable: true
+            Mutable: false
             Required: true
     AppUserPoolWebClient:
       Type: "AWS::Cognito::UserPoolClient"
