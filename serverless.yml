@@ -262,7 +262,6 @@ resources:
           AllowAdminCreateUserOnly: False
         AliasAttributes:
           - email
-          - custom:username
         AutoVerifiedAttributes:
           - email
         MfaConfiguration: OFF
