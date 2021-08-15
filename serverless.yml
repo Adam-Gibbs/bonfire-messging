@@ -255,14 +255,13 @@ functions:
 resources:
   Resources:
     # Auth Requirements        
-    CognitoUserPoolBonfire:
+    BonfireCognitoUserPool:
       Type: "AWS::Cognito::UserPool"
       Properties:
         AdminCreateUserConfig:
           AllowAdminCreateUserOnly: False
         AliasAttributes:
           - email
-          - nickname
         AutoVerifiedAttributes:
           - email
         MfaConfiguration: OFF
@@ -275,11 +274,6 @@ resources:
             RequireUppercase: true
         UserPoolName: ${self:custom.functionPrefix}
         Schema:
-          - Name: nickname
-            AttributeDataType: String
-            DeveloperOnlyAttribute: false
-            Mutable: true
-            Required: true
           - Name: email
             AttributeDataType: String
             DeveloperOnlyAttribute: false
@@ -292,12 +286,10 @@ resources:
         GenerateSecret: false
         ReadAttributes:
           - "email"
-          - "nickname"
         UserPoolId:
-          Ref: CognitoUserPoolBonfire
+          Ref: BonfireCognitoUserPool
         WriteAttributes:
           - "email"
-          - "nickname"
     AppCognitoIdentityPool:
       Type: "AWS::Cognito::IdentityPool"
       Properties:
@@ -305,7 +297,7 @@ resources:
         AllowUnauthenticatedIdentities: true
         CognitoIdentityProviders:
           - ProviderName:
-              'Fn::GetAtt': [ CognitoUserPoolBonfire, ProviderName ]
+              'Fn::GetAtt': [ BonfireCognitoUserPool, ProviderName ]
             ClientId:
               Ref: AppUserPoolWebClient
     cognitoAuthRole:
@@ -385,7 +377,7 @@ resources:
       Properties:
         Name: UserPool
         ProviderARNs:
-          - 'Fn::GetAtt': [ CognitoUserPoolBonfire, Arn ]
+          - 'Fn::GetAtt': [ BonfireCognitoUserPool, Arn ]
         RestApiId:
           Ref: ApiGatewayRestApi
         IdentitySource: "method.request.header.Authorization"
@@ -609,7 +601,7 @@ resources:
     UserPoolId:
       Description: User Pool ID for app to use
       Value:
-        Ref: CognitoUserPoolBonfire
+        Ref: BonfireCognitoUserPool
     UserPoolAppClient:
       Description: App Client ID for app to use
       Value:

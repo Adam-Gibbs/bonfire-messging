@@ -32,10 +32,6 @@ def lambda_handler(event, context):
                     'Name': "email",
                     'Value': email
                 },
-                {
-                    'Name': "nickname",
-                    'Value': username
-                }
             ],
             ValidationData=[
                 {
