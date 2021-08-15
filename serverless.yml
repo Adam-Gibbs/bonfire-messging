@@ -283,7 +283,7 @@ resources:
           - Name: email
             AttributeDataType: String
             DeveloperOnlyAttribute: false
-            Mutable: true
+            Mutable: false
             Required: true
     AppUserPoolWebClient:
       Type: "AWS::Cognito::UserPoolClient"
