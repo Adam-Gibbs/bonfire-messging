@@ -12,6 +12,6 @@ def decode_token(token):
     payload_json = json.loads(payload_json_str)
 
     return {
-        "username": payload_json["cognito:username"],
+        "username": payload_json["name"],
         "email": payload_json["email"]
     }
