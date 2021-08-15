@@ -29,22 +29,22 @@ def lambda_handler(event, context):
             Password=password,
             UserAttributes=[
                 {
-                    'Name': "username",
-                    'Value': username
-                },
-                {
                     'Name': "email",
                     'Value': email
+                },
+                {
+                    'Name': "custom:username",
+                    'Value': username
                 }
             ],
             ValidationData=[
                 {
-                    'Name': "username",
-                    'Value': username
-                },
-                {
                     'Name': "email",
                     'Value': email
+                },
+                {
+                    'Name': "custom:username",
+                    'Value': username
                 }
             ]
         )
