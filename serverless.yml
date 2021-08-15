@@ -275,11 +275,6 @@ resources:
             RequireUppercase: true
         UserPoolName: ${self:custom.functionPrefix}
         Schema:
-          - Name: preferred_username
-            AttributeDataType: String
-            DeveloperOnlyAttribute: false
-            Mutable: true
-            Required: false
           - Name: email
             AttributeDataType: String
             DeveloperOnlyAttribute: false
