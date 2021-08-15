@@ -261,8 +261,10 @@ resources:
         AdminCreateUserConfig:
           AllowAdminCreateUserOnly: False
         AliasAttributes:
+          - username
           - email
         AutoVerifiedAttributes:
+          - username
           - email
         MfaConfiguration: OFF
         Policies:
@@ -274,10 +276,15 @@ resources:
             RequireUppercase: true
         UserPoolName: ${self:custom.functionPrefix}
         Schema:
+          - Name: username
+            AttributeDataType: String
+            DeveloperOnlyAttribute: false
+            Mutable: false
+            Required: true
           - Name: email
             AttributeDataType: String
             DeveloperOnlyAttribute: false
-            Mutable: true
+            Mutable: false
             Required: true
     AppUserPoolWebClient:
       Type: "AWS::Cognito::UserPoolClient"
