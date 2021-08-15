@@ -1,3 +1,3 @@
 USER_POOL_LOC = 'eu-west-2'
-USER_POOL_ID = 'eu-west-2_xUNInjJwa'
-CLIENT_ID = '8gjhsrum4alfi1u9i6prargi2'
+USER_POOL_ID = 'eu-west-2_OLbVrbhK3'
+CLIENT_ID = '6b45r3d1459pu9bcu5dvlu4grc'
