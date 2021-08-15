@@ -291,10 +291,12 @@ resources:
         ClientName: Web
         GenerateSecret: false
         ReadAttributes:
+          - "preferred_username"
           - "email"
         UserPoolId:
           Ref: CognitoUserPoolBonfire
         WriteAttributes:
+          - "preferred_username"
           - "email"
     AppCognitoIdentityPool:
       Type: "AWS::Cognito::IdentityPool"
