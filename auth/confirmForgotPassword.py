@@ -30,8 +30,9 @@ def lambda_handler(event, context):
                 Password=password,
            )
 
-    except client_cognito.exceptions.NotAuthorizedException:
+    except client_cognito.exceptions.NotAuthorizedException as e:
         print("NotAuthorizedException")
+        print(e)
         return generate_response(400, {
             "success": False,
             "message": "User is already confirmed"

@@ -22,15 +22,17 @@ def lambda_handler(event, context):
             Username=username,
         )
 
-    except client_cognito.exceptions.InvalidParameterException:
+    except client_cognito.exceptions.InvalidParameterException as e:
         print("InvalidParameterException")
+        print(e)
         return generate_response(400, {
             "success": False,
             "message": f"User {username} is not confirmed yet"
         })
 
-    except client_cognito.exceptions.NotAuthorizedException:
+    except client_cognito.exceptions.NotAuthorizedException as e:
         print("NotAuthorizedException")
+        print(e)
         return generate_response(400, {
             "success": False,
             "message": "User is already confirmed"

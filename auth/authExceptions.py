@@ -8,6 +8,7 @@ def handle_auth_exception(exception):
 
     if name == "NotAuthorizedException":
         print("NotAuthorizedException")
+        print(exception)
         return generate_response(400, {
             "success": False,
             "message": "The username or password is incorrect"
@@ -15,6 +16,7 @@ def handle_auth_exception(exception):
 
     if name == "UserNotConfirmedException":
         print("UserNotConfirmedException")
+        print(exception)
         return generate_response(400, {
             "success": False,
             "message": "User is not confirmed"
@@ -22,6 +24,7 @@ def handle_auth_exception(exception):
 
     if name == "CodeMismatchException":
         print("CodeMismatchException")
+        print(exception)
         return generate_response(400, {
             "success": False,
             "message": "Invalid Verification code"
@@ -29,9 +32,18 @@ def handle_auth_exception(exception):
 
     if name == "UserNotFoundException":
         print("UserNotFoundException")
+        print(exception)
         return generate_response(400, {
             "success": False,
             "message": "Username does not exists"
+        })
+
+    if name == "InvalidParameterException":
+        print("InvalidParameterException")
+        print(exception)
+        return generate_response(400, {
+            "success": False,
+            "message": "User has not registered"
         })
 
     else:

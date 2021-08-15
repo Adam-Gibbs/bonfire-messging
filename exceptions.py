@@ -6,6 +6,7 @@ def handle_exception(exception):
 
     if name == "JSONDecodeError":
         print("JSONDecodeError")
+        print(exception)
         return generate_response(400, {
             "success": False,
             "message": "The request you have provided is invalid"

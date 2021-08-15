@@ -45,22 +45,25 @@ def lambda_handler(event, context):
             ]
         )
 
-    except client_cognito.exceptions.UsernameExistsException:
+    except client_cognito.exceptions.UsernameExistsException as e:
         print("UsernameExistsException")
+        print(e)
         return generate_response(400, {
             "success": False,
             "message": "This username already exists"
         })
 
-    except client_cognito.exceptions.InvalidPasswordException:
+    except client_cognito.exceptions.InvalidPasswordException as e:
         print("InvalidPasswordException")
+        print(e)
         return generate_response(400, {
             "success": False,
             "message": "Password should have Caps, Lower cas and Numbers"
         })
 
-    except client_cognito.exceptions.UserLambdaValidationException:
+    except client_cognito.exceptions.UserLambdaValidationException as e:
         print("UserLambdaValidationException")
+        print(e)
         return generate_response(400, {
             "success": False,
             "message": "Email already exists"
