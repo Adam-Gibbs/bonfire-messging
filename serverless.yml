@@ -255,7 +255,7 @@ functions:
 resources:
   Resources:
     # Auth Requirements        
-    BonfireCognitoUserPool:
+    BonfireUserPool:
       Type: "AWS::Cognito::UserPool"
       Properties:
         AdminCreateUserConfig:
@@ -287,7 +287,7 @@ resources:
         ReadAttributes:
           - "email"
         UserPoolId:
-          Ref: BonfireCognitoUserPool
+          Ref: BonfireUserPool
         WriteAttributes:
           - "email"
     AppCognitoIdentityPool:
@@ -297,7 +297,7 @@ resources:
         AllowUnauthenticatedIdentities: true
         CognitoIdentityProviders:
           - ProviderName:
-              'Fn::GetAtt': [ BonfireCognitoUserPool, ProviderName ]
+              'Fn::GetAtt': [ BonfireUserPool, ProviderName ]
             ClientId:
               Ref: AppUserPoolWebClient
     cognitoAuthRole:
@@ -377,7 +377,7 @@ resources:
       Properties:
         Name: UserPool
         ProviderARNs:
-          - 'Fn::GetAtt': [ BonfireCognitoUserPool, Arn ]
+          - 'Fn::GetAtt': [ BonfireUserPool, Arn ]
         RestApiId:
           Ref: ApiGatewayRestApi
         IdentitySource: "method.request.header.Authorization"
@@ -601,7 +601,7 @@ resources:
     UserPoolId:
       Description: User Pool ID for app to use
       Value:
-        Ref: BonfireCognitoUserPool
+        Ref: BonfireUserPool
     UserPoolAppClient:
       Description: App Client ID for app to use
       Value:
