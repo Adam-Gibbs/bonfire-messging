@@ -278,12 +278,12 @@ resources:
           - Name: preferred_username
             AttributeDataType: String
             DeveloperOnlyAttribute: false
-            Mutable: false
+            Mutable: true
             Required: true
           - Name: email
             AttributeDataType: String
             DeveloperOnlyAttribute: false
-            Mutable: false
+            Mutable: true
             Required: true
     AppUserPoolWebClient:
       Type: "AWS::Cognito::UserPoolClient"
