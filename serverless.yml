@@ -274,7 +274,7 @@ resources:
             RequireUppercase: true
         UserPoolName: ${self:custom.functionPrefix}
         Schema:
-          - Name: custom:username
+          - Name: username
             AttributeDataType: String
             DeveloperOnlyAttribute: false
             Mutable: true
