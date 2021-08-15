@@ -74,6 +74,6 @@ def lambda_handler(event, context):
 
     return generate_response(200, {
         "success": True,
-        "message": "Please confirm your signup, check Email for"
-                   "validation code",
+        "message": "Please confirm your signup, check "
+                   "Email for validation code",
     })

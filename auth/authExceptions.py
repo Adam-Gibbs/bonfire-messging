@@ -46,5 +46,13 @@ def handle_auth_exception(exception):
             "message": "User has not registered"
         })
 
+    if name == "LimitExceededException":
+        print("LimitExceededException")
+        print(exception)
+        return generate_response(400, {
+            "success": False,
+            "message": "You have reached the limit of emails today"
+        })
+
     else:
         return exceptions.handle_exception(exception)
