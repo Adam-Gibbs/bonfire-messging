@@ -261,10 +261,10 @@ resources:
         AdminCreateUserConfig:
           AllowAdminCreateUserOnly: False
         AliasAttributes:
-          - username
+          - name
           - email
         AutoVerifiedAttributes:
-          - username
+          - name
           - email
         MfaConfiguration: OFF
         Policies:
@@ -276,7 +276,7 @@ resources:
             RequireUppercase: true
         UserPoolName: ${self:custom.functionPrefix}
         Schema:
-          - Name: username
+          - Name: name
             AttributeDataType: String
             DeveloperOnlyAttribute: false
             Mutable: false
