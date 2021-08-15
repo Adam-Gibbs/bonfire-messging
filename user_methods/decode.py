@@ -12,6 +12,6 @@ def decode_token(token):
     payload_json = json.loads(payload_json_str)
 
     return {
-        "username": payload_json["preferred_username"],
+        "username": payload_json["username"],
         "email": payload_json["email"]
     }
