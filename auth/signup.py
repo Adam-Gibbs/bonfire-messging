@@ -29,7 +29,7 @@ def lambda_handler(event, context):
             Password=password,
             UserAttributes=[
                 {
-                    'Name': "name",
+                    'Name': "preferred_username",
                     'Value': username
                 },
                 {
@@ -39,7 +39,7 @@ def lambda_handler(event, context):
             ],
             ValidationData=[
                 {
-                    'Name': "name",
+                    'Name': "preferred_username",
                     'Value': username
                 },
                 {
