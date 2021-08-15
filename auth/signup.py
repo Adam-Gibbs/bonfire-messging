@@ -33,7 +33,7 @@ def lambda_handler(event, context):
                     'Value': email
                 },
                 {
-                    'Name': "username",
+                    'Name': "nickname",
                     'Value': username
                 }
             ],

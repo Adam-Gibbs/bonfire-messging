@@ -262,6 +262,7 @@ resources:
           AllowAdminCreateUserOnly: False
         AliasAttributes:
           - email
+          - nickname
         AutoVerifiedAttributes:
           - email
         MfaConfiguration: OFF
@@ -274,11 +275,11 @@ resources:
             RequireUppercase: true
         UserPoolName: ${self:custom.functionPrefix}
         Schema:
-          - Name: username
+          - Name: nickname
             AttributeDataType: String
             DeveloperOnlyAttribute: false
             Mutable: true
-            Required: false
+            Required: true
           - Name: email
             AttributeDataType: String
             DeveloperOnlyAttribute: false
@@ -291,10 +292,12 @@ resources:
         GenerateSecret: false
         ReadAttributes:
           - "email"
+          - "nickname"
         UserPoolId:
           Ref: BonfireCognitoUserPool
         WriteAttributes:
           - "email"
+          - "nickname"
     AppCognitoIdentityPool:
       Type: "AWS::Cognito::IdentityPool"
       Properties:
