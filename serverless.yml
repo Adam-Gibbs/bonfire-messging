@@ -279,7 +279,7 @@ resources:
             AttributeDataType: String
             DeveloperOnlyAttribute: false
             Mutable: true
-            Required: true
+            Required: false
           - Name: email
             AttributeDataType: String
             DeveloperOnlyAttribute: false
