@@ -408,6 +408,19 @@ resources:
         BillingMode: PAY_PER_REQUEST
         TableName: ${self:custom.chatsTable}
 
+    MessagesTable:
+      Type: "AWS::DynamoDB::Table"
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: messageId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: messageId
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:custom.messagesTable}
+
+
   Outputs:
     UserPoolId:
       Description: User Pool ID for app to use
