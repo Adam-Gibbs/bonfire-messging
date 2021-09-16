@@ -427,7 +427,6 @@ resources:
                 KeyType: RANGE
             Projection:
               ProjectionType: ALL
-            BillingMode: PAY_PER_REQUEST
         KeySchema:
           - AttributeName: messageId
             KeyType: HASH
@@ -449,7 +448,6 @@ resources:
                 KeyType: HASH
             Projection:
               ProjectionType: ALL
-            BillingMode: PAY_PER_REQUEST
         KeySchema:
           - AttributeName: chatMemberId
             KeyType: HASH
@@ -483,7 +481,6 @@ resources:
                 KeyType: HASH
             Projection:
               ProjectionType: ALL
-            BillingMode: PAY_PER_REQUEST
         KeySchema:
           - AttributeName: friendRequestId
             KeyType: HASH
@@ -507,14 +504,12 @@ resources:
                 KeyType: HASH
             Projection:
               ProjectionType: ALL
-            BillingMode: PAY_PER_REQUEST
           - IndexName: friendOf-index
             KeySchema:
               - AttributeName: friendOf
                 KeyType: HASH
             Projection:
               ProjectionType: ALL
-            BillingMode: PAY_PER_REQUEST
         KeySchema:
           - AttributeName: friendLinkId
             KeyType: HASH
@@ -536,7 +531,6 @@ resources:
                 KeyType: HASH
             Projection:
               ProjectionType: ALL
-            BillingMode: PAY_PER_REQUEST
         KeySchema:
           - AttributeName: fireId
             KeyType: HASH
@@ -558,7 +552,6 @@ resources:
                 KeyType: HASH
             Projection:
               ProjectionType: ALL
-            BillingMode: PAY_PER_REQUEST
         KeySchema:
           - AttributeName: recipientId
             KeyType: HASH
