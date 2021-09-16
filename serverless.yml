@@ -454,6 +454,17 @@ resources:
         BillingMode: PAY_PER_REQUEST
         TableName: ${self:custom.chatMembersTable}
 
+    MediaTable:
+      Type: "AWS::DynamoDB::Table"
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: mediaId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: mediaId
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:custom.mediaTable}
 
   Outputs:
     UserPoolId:
