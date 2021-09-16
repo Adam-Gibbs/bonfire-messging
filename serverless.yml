@@ -439,6 +439,15 @@ resources:
         AttributeDefinitions:
           - AttributeName: chatMemberId
             AttributeType: S
+          - AttributeName: chatMember
+            AttributeType: S
+        GlobalSecondaryIndexes:
+          - IndexName: chatMember-index
+            KeySchema:
+              - AttributeName: chatMember
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
         KeySchema:
           - AttributeName: chatMemberId
             KeyType: HASH
