@@ -433,6 +433,18 @@ resources:
         BillingMode: PAY_PER_REQUEST
         TableName: ${self:custom.messagesTable}
 
+    ChatMembersTable:
+      Type: "AWS::DynamoDB::Table"
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: chatMemberId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: chatMemberId
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:custom.chatMembersTable}
+
 
   Outputs:
     UserPoolId:
