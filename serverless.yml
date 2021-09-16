@@ -414,6 +414,19 @@ resources:
         AttributeDefinitions:
           - AttributeName: messageId
             AttributeType: S
+          - AttributeName: chatId
+            AttributeType: S
+          - AttributeName: sent
+            AttributeType: S
+        GlobalSecondaryIndexes:
+          - IndexName: chatId-sent-index
+            KeySchema:
+              - AttributeName: chatId
+                KeyType: HASH
+              - AttributeName: sent
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
         KeySchema:
           - AttributeName: messageId
             KeyType: HASH
