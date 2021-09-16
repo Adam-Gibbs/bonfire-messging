@@ -9,14 +9,14 @@ plugins:
 
 custom:
   functionPrefix: 'bonfire-messaging-${self:provider.stage}'
-  usersTable: '${self:custom.functionPrefix}.users.v0.3'
-  chatsTable: '${self:custom.functionPrefix}.chats.v0.7'
-  messagesTable: '${self:custom.functionPrefix}.messages.v0.5'
-  chatMembersTable: '${self:custom.functionPrefix}.chatMembers.v0.6'
-  mediaTable: '${self:custom.functionPrefix}.media'
-  friendRequestsTable: '${self:custom.functionPrefix}.friendRequests.v0.3'
+  usersTable: '${self:custom.functionPrefix}.users'
+  chatsTable: '${self:custom.functionPrefix}.chats'
+  messagesTable: '${self:custom.functionPrefix}.messages'
+  chatMembersTable: '${self:custom.functionPrefix}.chatMembers'
+  mediaTable: '${self:custom.functionPrefix}.mediaTable'
+  friendRequestsTable: '${self:custom.functionPrefix}.friendRequests'
   friendsTable: '${self:custom.functionPrefix}.friends'
-  firesTable: '${self:custom.functionPrefix}.fires.v0.4'
+  firesTable: '${self:custom.functionPrefix}.fires'
   recipientsTable: '${self:custom.functionPrefix}.recipients'
   identityPool: 'bonfireMessaging${self:provider.stage}'
   pythonRequirements:
