@@ -465,7 +465,8 @@ resources:
             KeyType: HASH
         BillingMode: PAY_PER_REQUEST
         TableName: ${self:custom.mediaTable}
-FriendRequestsTable:
+
+    FriendRequestsTable:
       Type: "AWS::DynamoDB::Table"
       Properties:
         AttributeDefinitions:
@@ -492,28 +493,35 @@ FriendRequestsTable:
         AttributeDefinitions:
           - AttributeName: friendLinkId
             AttributeType: S
-          - AttributeName: friendTo
-            AttributeType: S
-          - AttributeName: friendOf
-            AttributeType: S
-        GlobalSecondaryIndexes:
-          - IndexName: friendTo-index
-            KeySchema:
-              - AttributeName: friendTo
-                KeyType: HASH
-            Projection:
-              ProjectionType: ALL
-          - IndexName: friendOf-index
-            KeySchema:
-              - AttributeName: friendOf
-                KeyType: HASH
-            Projection:
-              ProjectionType: ALL
         KeySchema:
           - AttributeName: friendLinkId
             KeyType: HASH
         BillingMode: PAY_PER_REQUEST
         TableName: ${self:custom.friendsTable}
+
+    FiresTable:
+      Type: "AWS::DynamoDB::Table"
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: fireId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: fireId
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:custom.firesTable}
+
+    RecipientsTable:
+      Type: "AWS::DynamoDB::Table"
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: recipientId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: recipientId
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:custom.recipientsTable}
 
   Outputs:
     UserPoolId:
