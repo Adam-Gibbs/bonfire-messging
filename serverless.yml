@@ -505,6 +505,15 @@ resources:
         AttributeDefinitions:
           - AttributeName: fireId
             AttributeType: S
+          - AttributeName: publicFire
+            AttributeType: S
+        GlobalSecondaryIndexes:
+          - IndexName: publicFire-index
+            KeySchema:
+              - AttributeName: publicFire
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
         KeySchema:
           - AttributeName: fireId
             KeyType: HASH
