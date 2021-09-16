@@ -492,6 +492,15 @@ FriendRequestsTable:
         AttributeDefinitions:
           - AttributeName: friendLinkId
             AttributeType: S
+          - AttributeName: friendTo
+            AttributeType: S
+        GlobalSecondaryIndexes:
+          - IndexName: friendTo-index
+            KeySchema:
+              - AttributeName: friendTo
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
         KeySchema:
           - AttributeName: friendLinkId
             KeyType: HASH
