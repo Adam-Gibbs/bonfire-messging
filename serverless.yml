@@ -382,7 +382,7 @@ resources:
           Ref: ApiGatewayRestApi
         IdentitySource: "method.request.header.Authorization"
         Type: COGNITO_USER_POOLS
-    
+
     # DB stuff
     UsersTable:
       Type: 'AWS::DynamoDB::Table'
@@ -393,9 +393,7 @@ resources:
         KeySchema:
           - AttributeName: username
             KeyType: HASH
-        ProvisionedThroughput:
-          ReadCapacityUnits: 5
-          WriteCapacityUnits: 5
+        BillingMode: PAY_PER_REQUEST
         TableName: ${self:custom.usersTable}
 
     ChatsTable:
@@ -407,9 +405,7 @@ resources:
         KeySchema:
           - AttributeName: chatId
             KeyType: HASH
-        ProvisionedThroughput:
-          ReadCapacityUnits: 5
-          WriteCapacityUnits: 5
+        BillingMode: PAY_PER_REQUEST
         TableName: ${self:custom.chatsTable}
 
     MessagesTable:
@@ -431,15 +427,11 @@ resources:
                 KeyType: RANGE
             Projection:
               ProjectionType: ALL
-            ProvisionedThroughput:
-              ReadCapacityUnits: 5
-              WriteCapacityUnits: 5
+            BillingMode: PAY_PER_REQUEST
         KeySchema:
           - AttributeName: messageId
             KeyType: HASH
-        ProvisionedThroughput:
-          ReadCapacityUnits: 5
-          WriteCapacityUnits: 5
+        BillingMode: PAY_PER_REQUEST
         TableName: ${self:custom.messagesTable}
 
     ChatMembersTable:
@@ -457,15 +449,11 @@ resources:
                 KeyType: HASH
             Projection:
               ProjectionType: ALL
-            ProvisionedThroughput:
-              ReadCapacityUnits: 5
-              WriteCapacityUnits: 5
+            BillingMode: PAY_PER_REQUEST
         KeySchema:
           - AttributeName: chatMemberId
             KeyType: HASH
-        ProvisionedThroughput:
-          ReadCapacityUnits: 5
-          WriteCapacityUnits: 5
+        BillingMode: PAY_PER_REQUEST
         TableName: ${self:custom.chatMembersTable}
 
     MediaTable:
@@ -477,9 +465,7 @@ resources:
         KeySchema:
           - AttributeName: mediaId
             KeyType: HASH
-        ProvisionedThroughput:
-          ReadCapacityUnits: 5
-          WriteCapacityUnits: 5
+        BillingMode: PAY_PER_REQUEST
         TableName: ${self:custom.mediaTable}
 
     FriendRequestsTable:
@@ -497,15 +483,11 @@ resources:
                 KeyType: HASH
             Projection:
               ProjectionType: ALL
-            ProvisionedThroughput:
-              ReadCapacityUnits: 5
-              WriteCapacityUnits: 5
+            BillingMode: PAY_PER_REQUEST
         KeySchema:
           - AttributeName: friendRequestId
             KeyType: HASH
-        ProvisionedThroughput:
-          ReadCapacityUnits: 5
-          WriteCapacityUnits: 5
+        BillingMode: PAY_PER_REQUEST
         TableName: ${self:custom.friendRequestsTable}
 
     FriendsTable:
@@ -525,24 +507,18 @@ resources:
                 KeyType: HASH
             Projection:
               ProjectionType: ALL
-            ProvisionedThroughput:
-              ReadCapacityUnits: 5
-              WriteCapacityUnits: 5
+            BillingMode: PAY_PER_REQUEST
           - IndexName: friendOf-index
             KeySchema:
               - AttributeName: friendOf
                 KeyType: HASH
             Projection:
               ProjectionType: ALL
-            ProvisionedThroughput:
-              ReadCapacityUnits: 5
-              WriteCapacityUnits: 5
+            BillingMode: PAY_PER_REQUEST
         KeySchema:
           - AttributeName: friendLinkId
             KeyType: HASH
-        ProvisionedThroughput:
-          ReadCapacityUnits: 5
-          WriteCapacityUnits: 5
+        BillingMode: PAY_PER_REQUEST
         TableName: ${self:custom.friendsTable}
 
     FiresTable:
@@ -560,15 +536,11 @@ resources:
                 KeyType: HASH
             Projection:
               ProjectionType: ALL
-            ProvisionedThroughput:
-              ReadCapacityUnits: 5
-              WriteCapacityUnits: 5
+            BillingMode: PAY_PER_REQUEST
         KeySchema:
           - AttributeName: fireId
             KeyType: HASH
-        ProvisionedThroughput:
-          ReadCapacityUnits: 5
-          WriteCapacityUnits: 5
+        BillingMode: PAY_PER_REQUEST
         TableName: ${self:custom.firesTable}
 
     RecipientsTable:
@@ -586,15 +558,11 @@ resources:
                 KeyType: HASH
             Projection:
               ProjectionType: ALL
-            ProvisionedThroughput:
-              ReadCapacityUnits: 5
-              WriteCapacityUnits: 5
+            BillingMode: PAY_PER_REQUEST
         KeySchema:
           - AttributeName: recipientId
             KeyType: HASH
-        ProvisionedThroughput:
-          ReadCapacityUnits: 5
-          WriteCapacityUnits: 5
+        BillingMode: PAY_PER_REQUEST
         TableName: ${self:custom.recipientsTable}
 
   Outputs:
