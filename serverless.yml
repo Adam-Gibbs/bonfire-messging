@@ -495,10 +495,18 @@ resources:
             AttributeType: S
           - AttributeName: friendTo
             AttributeType: S
+          - AttributeName: friendOf
+            AttributeType: S
         GlobalSecondaryIndexes:
           - IndexName: friendTo-index
             KeySchema:
               - AttributeName: friendTo
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+          - IndexName: friendOf-index
+            KeySchema:
+              - AttributeName: friendOf
                 KeyType: HASH
             Projection:
               ProjectionType: ALL
