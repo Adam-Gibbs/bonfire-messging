@@ -465,6 +465,38 @@ resources:
             KeyType: HASH
         BillingMode: PAY_PER_REQUEST
         TableName: ${self:custom.mediaTable}
+FriendRequestsTable:
+      Type: "AWS::DynamoDB::Table"
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: friendRequestId
+            AttributeType: S
+          - AttributeName: requestTo
+            AttributeType: S
+        GlobalSecondaryIndexes:
+          - IndexName: requestTo-index
+            KeySchema:
+              - AttributeName: requestTo
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+        KeySchema:
+          - AttributeName: friendRequestId
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:custom.friendRequestsTable}
+
+    FriendsTable:
+      Type: "AWS::DynamoDB::Table"
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: friendLinkId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: friendLinkId
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:custom.friendsTable}
 
   Outputs:
     UserPoolId:
